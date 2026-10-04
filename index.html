@@ -59,6 +59,11 @@
     linear-gradient(135deg,#3F5544 0%,#6B8062 55%,#C98A5B 100%);}
   .photo.wide{aspect-ratio:16/10;}
   .photo.square{aspect-ratio:1/1;}
+  video.photo{object-fit:cover;width:100%;height:100%;display:block;background:#1E2A22;}
+  .statement{position:relative;overflow:hidden;}
+  .statement video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+  .statement::before{content:"";position:absolute;inset:0;background:rgba(10,14,11,0.72);z-index:1;}
+  .statement .wrap{position:relative;z-index:2;}
   @media (max-width:860px){ .hero .wrap{grid-template-columns:1fr;} .hero{padding:56px 0;} }
 
   /* ---- lines grid ---- */
@@ -159,7 +164,9 @@
       <p>Ikeda manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.</p>
       <a class="btn" href="#wholesale">Request Wholesale Pricing →</a>
     </div>
-    <div class="photo wide"></div>
+    <video class="photo wide" autoplay muted loop playsinline>
+      <source src="https://cdn.pixabay.com/video/2025/02/12/257927_large.mp4" type="video/mp4">
+    </video>
   </div>
 </section>
 
@@ -193,6 +200,9 @@
 </section>
 
 <section class="statement">
+  <video autoplay muted loop playsinline>
+    <source src="https://cdn.pixabay.com/video/2023/12/04/192012-891324245_large.mp4" type="video/mp4">
+  </video>
   <div class="wrap">
     <h2>"A fragrance that's right once is a formula. A fragrance that's right on every pallet, every time, is a business."</h2>
     <p class="by">Ikeda, on manufacturing</p>
