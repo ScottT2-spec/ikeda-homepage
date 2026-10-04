@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ikeda — Wholesale Air Fresheners</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4EF; --paper-2:#EAEEE6; --ink:#1E2A22; --ink-soft:#49584D;
+    --clay:#B5572F; --moss:#5C7A62; --line:#D9E0D4;
+    --serif:'Fraunces',Georgia,serif; --sans:'Work Sans',system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --paper:#171D18; --paper-2:#1E251F; --ink:#EDEFE9; --ink-soft:#B7C1B6; --line:#30392F; }
+  }
+  :root[data-theme="dark"]{ --paper:#171D18; --paper-2:#1E251F; --ink:#EDEFE9; --ink-soft:#B7C1B6; --line:#30392F; }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+  img,svg{max-width:100%;}
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;letter-spacing:-0.01em;}
+
+  /* ---- nav ---- */
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--paper);border-bottom:1px solid var(--line);}
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .logo{font-family:var(--serif);font-size:22px;font-weight:600;text-decoration:none;}
+  .navlinks{display:flex;align-items:center;gap:34px;list-style:none;margin:0;padding:0;}
+  .navlinks > li{position:relative;}
+  .navlinks a{text-decoration:none;font-size:14.5px;color:var(--ink-soft);}
+  .navlinks > li > a:hover{color:var(--ink);}
+  .cta-btn{background:var(--ink);color:var(--paper);padding:10px 20px;border-radius:2px;font-size:14px;text-decoration:none;}
+  .dropdown{display:none;position:absolute;top:100%;left:-16px;background:var(--paper);border:1px solid var(--line);
+    padding:18px;min-width:460px;grid-template-columns:repeat(3,1fr);gap:22px;box-shadow:0 12px 24px rgba(0,0,0,0.06);}
+  .navlinks > li:hover .dropdown{display:grid;}
+  .dropdown h4{font-family:var(--sans);font-size:12px;color:var(--ink-soft);margin:0 0 8px;font-weight:600;}
+  .dropdown a{display:block;font-size:13.5px;padding:3px 0;color:var(--ink);}
+  .dropdown a:hover{color:var(--clay);}
+  .mobile-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
+  @media (max-width:860px){
+    .navlinks{display:none;}
+    .mobile-toggle{display:block;}
+  }
+
+  /* ---- hero ---- */
+  .hero{padding:96px 0 84px;}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;}
+  .hero h1{font-size:clamp(38px,5.2vw,62px);line-height:1.08;}
+  .hero p{font-size:17px;color:var(--ink-soft);max-width:46ch;margin:20px 0 28px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--clay);color:#fff;padding:13px 26px;
+    border-radius:2px;text-decoration:none;font-size:14.5px;font-weight:500;}
+  .photo{border-radius:3px;aspect-ratio:4/5;background:
+    radial-gradient(120% 140% at 15% 10%, #7C9880 0%, transparent 55%),
+    linear-gradient(135deg,#3F5544 0%,#6B8062 55%,#C98A5B 100%);}
+  .photo.wide{aspect-ratio:16/10;}
+  .photo.square{aspect-ratio:1/1;}
+  @media (max-width:860px){ .hero .wrap{grid-template-columns:1fr;} .hero{padding:56px 0;} }
+
+  /* ---- lines grid ---- */
+  .section{padding:84px 0;}
+  .section-head{max-width:560px;margin-bottom:44px;}
+  .section-head h2{font-size:clamp(28px,3.4vw,36px);}
+  .section-head p{color:var(--ink-soft);margin-top:12px;font-size:16px;}
+  .lines{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  .line-card a{text-decoration:none;color:var(--ink);display:block;}
+  .line-card h3{font-size:19px;margin:18px 0 8px;}
+  .line-card p{color:var(--ink-soft);font-size:14.5px;margin:0 0 10px;}
+  .line-card .more{font-size:13.5px;color:var(--clay);}
+  @media (max-width:860px){ .lines{grid-template-columns:1fr;} }
+
+  /* ---- statement band ---- */
+  .statement{background:var(--ink);color:var(--paper);padding:96px 0;}
+  .statement .wrap{max-width:760px;}
+  .statement h2{font-size:clamp(26px,3.6vw,38px);line-height:1.3;font-weight:400;}
+  .statement .by{margin-top:22px;color:#AFC0AF;font-size:14px;}
+
+  /* ---- story rows ---- */
+  .story-row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding:72px 0;border-top:1px solid var(--line);}
+  .story-row.reverse .photo{order:2;}
+  .story-row h2{font-size:clamp(24px,3vw,32px);}
+  .story-row p{color:var(--ink-soft);margin:16px 0 22px;font-size:15.5px;max-width:48ch;}
+  .story-row .more{color:var(--clay);text-decoration:none;font-size:14.5px;}
+  @media (max-width:860px){ .story-row,.story-row.reverse{grid-template-columns:1fr;} .story-row.reverse .photo{order:0;} }
+
+  /* ---- contact band ---- */
+  .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
+  .contact-band h2{font-size:26px;}
+  .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
+
+  /* ---- footer ---- */
+  footer{padding:60px 0 36px;border-top:1px solid var(--line);}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;padding-bottom:32px;border-bottom:1px solid var(--line);}
+  .foot-logo{font-family:var(--serif);font-size:20px;}
+  .social{display:flex;gap:16px;}
+  .social a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;}
+  .legal{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:24px 0;}
+  .foot-links{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+  .foot-links a{text-decoration:none;}
+  .copyright{font-size:12.5px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="logo" href="#">Ikeda</a>
+    <ul class="navlinks">
+      <li><a href="#">Products ▾</a>
+        <div class="dropdown">
+          <div>
+            <h4>Home & Living</h4>
+            <a href="#">Reed Diffusers</a><a href="#">Scented Candles</a><a href="#">Room Sprays</a><a href="#">Gel Fresheners</a>
+          </div>
+          <div>
+            <h4>Auto & Mobile</h4>
+            <a href="#">Vent Clips</a><a href="#">Car Sprays</a><a href="#">Car Diffusers</a><a href="#">Fleet & Taxi Packs</a>
+          </div>
+          <div>
+            <h4>Commercial & Wholesale</h4>
+            <a href="#">Bulk Air Fresheners</a><a href="#">HVAC Scenting</a><a href="#">Custom Fragrance</a><a href="#">Private Label</a>
+          </div>
+        </div>
+      </li>
+      <li><a href="#">Explore the Brand ▾</a>
+        <div class="dropdown" style="grid-template-columns:1fr;min-width:200px;">
+          <div><a href="#">About Us</a><a href="#">Our Story</a></div>
+        </div>
+      </li>
+      <li><a href="#">Offers</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <a class="cta-btn" href="#">Shop Online</a>
+    <button class="mobile-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Fragrance that holds up, at any volume.</h1>
+      <p>Ikeda manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.</p>
+      <a class="btn" href="#">Request Wholesale Pricing →</a>
+    </div>
+    <div class="photo wide"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Three ranges, one supply chain</h2>
+      <p>Every range ships the same way: consistent fragrance, reliable case counts, and lead times built for repeat wholesale orders.</p>
+    </div>
+    <div class="lines">
+      <div class="line-card"><a href="#">
+        <div class="photo square"></div>
+        <h3>Home & Living</h3>
+        <p>Reed diffusers, candles, and room sprays — stocked in the pack sizes retail shelves actually move.</p>
+        <span class="more">View range →</span>
+      </a></div>
+      <div class="line-card"><a href="#">
+        <div class="photo square"></div>
+        <h3>Auto & Mobile</h3>
+        <p>Vent clips and car sprays built for rental fleets, taxis, and forecourt retail alike.</p>
+        <span class="more">View range →</span>
+      </a></div>
+      <div class="line-card"><a href="#">
+        <div class="photo square"></div>
+        <h3>Commercial & Wholesale</h3>
+        <p>Bulk fresheners and HVAC scenting, with custom fragrance and private label on request.</p>
+        <span class="more">View range →</span>
+      </a></div>
+    </div>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap">
+    <h2>"A fragrance that's right once is a formula. A fragrance that's right on every pallet, every time, is a business."</h2>
+    <p class="by">Ikeda, on manufacturing</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="story-row">
+    <div class="photo wide"></div>
+    <div>
+      <h2>About Us</h2>
+      <p>Ikeda is a wholesale air freshener manufacturer, supplying retailers, distributors, and fleets with consistent fragrance at case and pallet volume — plus custom and private-label runs for partners who need their own brand on the shelf.</p>
+      <a class="more" href="#">Learn more →</a>
+    </div>
+  </div>
+  <div class="story-row reverse">
+    <div class="photo wide"></div>
+    <div>
+      <h2>Our Story</h2>
+      <p>Ikeda started supplying a handful of local retailers with one reliable scent. Demand for consistent, repeatable fragrance at scale built the rest — today the same formulas ship by the pallet, unchanged order to order.</p>
+      <a class="more" href="#">Learn more →</a>
+    </div>
+  </div>
+</section>
+
+<section class="contact-band">
+  <div class="wrap">
+    <h2>Looking to stock Ikeda?</h2>
+    <p>Tell us your volumes and we'll get back with pricing, lead times, and samples.</p>
+    <a class="btn" href="#">Get a Wholesale Quote →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-logo">Ikeda</div>
+      <div class="social">
+        <a href="#">Facebook</a><a href="#">Instagram</a><a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="legal">
+      Ikeda S.p.A. — Placeholder Registered Address, City, Country<br>
+      Registration No. 00000000 — VAT 00000000000 — contact@ikeda.example
+    </div>
+    <div class="foot-links">
+      <a href="#">Privacy Policy</a><a href="#">Cookie Policy</a><a href="#">Legal Notice</a><a href="#">Ingredient Sheets</a>
+    </div>
+    <div class="copyright">©2026 Ikeda. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>
