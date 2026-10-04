@@ -102,6 +102,19 @@
   .foot-links{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
   .foot-links a{text-decoration:none;}
   .copyright{font-size:12.5px;color:var(--ink-soft);}
+
+  /* ---- forms ---- */
+  .form{text-align:left;}
+  .form label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:5px;}
+  .form input,.form textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:2px;
+    background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14.5px;margin-bottom:16px;}
+  .form input:focus,.form textarea:focus{outline:2px solid var(--moss);outline-offset:1px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:600px){ .form-row{grid-template-columns:1fr;} }
+  .form-status{font-size:13.5px;margin-top:10px;min-height:1.2em;}
+  .form-status[data-state="ok"]{color:var(--moss);}
+  .form-status[data-state="error"]{color:var(--clay);}
+  .form button[disabled]{opacity:0.6;cursor:default;}
 </style>
 </head>
 <body>
@@ -144,7 +157,7 @@
     <div>
       <h1>Fragrance that holds up, at any volume.</h1>
       <p>Ikeda manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.</p>
-      <a class="btn" href="#">Request Wholesale Pricing →</a>
+      <a class="btn" href="#wholesale">Request Wholesale Pricing →</a>
     </div>
     <div class="photo wide"></div>
   </div>
@@ -205,11 +218,40 @@
   </div>
 </section>
 
+<section class="section" id="wholesale" style="background:var(--paper-2);">
+  <div class="wrap" style="max-width:640px;">
+    <div class="section-head">
+      <h2>Get a wholesale quote</h2>
+      <p>Tell us a bit about your business and we'll get back with pricing, lead times, and samples.</p>
+    </div>
+    <form class="form" data-type="wholesale">
+      <div class="form-row">
+        <div><label>Name *</label><input type="text" name="name" required></div>
+        <div><label>Company *</label><input type="text" name="company" required></div>
+      </div>
+      <div class="form-row">
+        <div><label>Email *</label><input type="email" name="email" required></div>
+        <div><label>Phone</label><input type="tel" name="phone"></div>
+      </div>
+      <div><label>Estimated monthly volume</label><input type="text" name="volume" placeholder="e.g. 500 units / month"></div>
+      <div><label>Tell us what you need *</label><textarea name="message" rows="3" required></textarea></div>
+      <button type="submit" class="btn">Send Request →</button>
+      <p class="form-status" role="status"></p>
+    </form>
+  </div>
+</section>
+
 <section class="contact-band">
-  <div class="wrap">
-    <h2>Looking to stock Ikeda?</h2>
-    <p>Tell us your volumes and we'll get back with pricing, lead times, and samples.</p>
-    <a class="btn" href="#">Get a Wholesale Quote →</a>
+  <div class="wrap" style="max-width:520px;">
+    <h2>General question?</h2>
+    <p>For anything that isn't a wholesale order, send us a message directly.</p>
+    <form class="form" data-type="contact" style="text-align:left;margin-top:18px;">
+      <div><label>Name *</label><input type="text" name="name" required></div>
+      <div><label>Email *</label><input type="email" name="email" required></div>
+      <div><label>Message *</label><textarea name="message" rows="3" required></textarea></div>
+      <button type="submit" class="btn">Send Message →</button>
+      <p class="form-status" role="status"></p>
+    </form>
   </div>
 </section>
 
@@ -232,5 +274,44 @@
   </div>
 </footer>
 
+<script>
+  // One submit handler for every form on the page, regardless of type —
+  // they all go to the same backend endpoint. Set window.IKEDA_API_BASE
+  // before this script if the backend is hosted on a different origin
+  // than the page itself.
+  const API_BASE = window.IKEDA_API_BASE || "";
+
+  document.querySelectorAll("form.form").forEach((form) => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = form.querySelector(".form-status");
+      const button = form.querySelector("button[type=submit]");
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.type = form.dataset.type;
+
+      button.disabled = true;
+      status.textContent = "Sending…";
+      status.removeAttribute("data-state");
+
+      try {
+        const res = await fetch(`${API_BASE}/api/submissions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.error || "Something went wrong");
+        status.textContent = "Thanks — we'll be in touch shortly.";
+        status.dataset.state = "ok";
+        form.reset();
+      } catch (err) {
+        status.textContent = err.message || "Something went wrong — please try again.";
+        status.dataset.state = "error";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>
 </body>
 </html>
