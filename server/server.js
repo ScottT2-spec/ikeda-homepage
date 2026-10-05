@@ -14,12 +14,12 @@ const db = new Database(path.join(__dirname, "data.db"));
 db.exec(`
   CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type TEXT NOT NULL,             -- 'contact' | 'wholesale'
-    name TEXT NOT NULL,
+    type TEXT NOT NULL,             -- 'contact' | 'wholesale' | 'newsletter'
+    name TEXT,                      -- newsletter signups are email-only
     email TEXT NOT NULL,
     company TEXT,
     phone TEXT,
-    message TEXT NOT NULL,
+    message TEXT,
     volume TEXT,                    -- wholesale-only: estimated monthly volume
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   )
@@ -34,7 +34,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "..")));
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const VALID_TYPES = new Set(["contact", "wholesale"]);
+const VALID_TYPES = new Set(["contact", "wholesale", "newsletter"]);
 
 // Very small in-memory rate limit, per IP — enough to stop a script
 // hammering the endpoint without needing a separate service for it.
@@ -63,11 +63,16 @@ app.post("/api/submissions", (req, res) => {
   if (!VALID_TYPES.has(type)) {
     return res.status(400).json({ success: false, error: "Invalid submission type" });
   }
-  if (!name || !email || !message) {
-    return res.status(400).json({ success: false, error: "Name, email, and message are required" });
+  if (!email) {
+    return res.status(400).json({ success: false, error: "Email is required" });
   }
   if (!EMAIL_RE.test(email)) {
     return res.status(400).json({ success: false, error: "Invalid email address" });
+  }
+  // Newsletter signups are email-only by design — contact and wholesale
+  // still need a name and message.
+  if (type !== "newsletter" && (!name || !message)) {
+    return res.status(400).json({ success: false, error: "Name and message are required" });
   }
   if (type === "wholesale" && !company) {
     return res.status(400).json({ success: false, error: "Company name is required for a wholesale quote" });
@@ -79,11 +84,11 @@ app.post("/api/submissions", (req, res) => {
   `);
   const info = stmt.run({
     type,
-    name: String(name).slice(0, 200),
+    name: name ? String(name).slice(0, 200) : null,
     email: String(email).slice(0, 320),
     company: company ? String(company).slice(0, 200) : null,
     phone: phone ? String(phone).slice(0, 50) : null,
-    message: String(message).slice(0, 5000),
+    message: message ? String(message).slice(0, 5000) : null,
     volume: volume ? String(volume).slice(0, 100) : null,
   });
 

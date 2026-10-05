@@ -120,6 +120,14 @@
   .form-status[data-state="ok"]{color:var(--moss);}
   .form-status[data-state="error"]{color:var(--clay);}
   .form button[disabled]{opacity:0.6;cursor:default;}
+
+  .newsletter-band{background:#12150F;color:#F3F4EE;padding:72px 0;text-align:center;}
+  .newsletter-band h2{color:#F3F4EE;font-size:26px;}
+  .newsletter-band p{color:#C7D0C4;margin:12px 0 26px;}
+  .newsletter-form{max-width:440px;margin:0 auto;}
+  .newsletter-row{display:flex;gap:10px;}
+  .newsletter-row input{flex:1;margin-bottom:0;background:#fff;color:var(--ink);}
+  @media (max-width:520px){ .newsletter-row{flex-direction:column;} }
 </style>
 </head>
 <body>
@@ -260,6 +268,20 @@
       <div><label>Email *</label><input type="email" name="email" required></div>
       <div><label>Message *</label><textarea name="message" rows="3" required></textarea></div>
       <button type="submit" class="btn">Send Message →</button>
+      <p class="form-status" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<section class="newsletter-band">
+  <div class="wrap">
+    <h2>Stay in the loop</h2>
+    <p>New ranges, restocks, and wholesale offers — straight to your inbox, nothing else.</p>
+    <form class="form newsletter-form" data-type="newsletter">
+      <div class="newsletter-row">
+        <input type="email" name="email" placeholder="you@company.com" required aria-label="Email address">
+        <button type="submit" class="btn">Sign Up →</button>
+      </div>
       <p class="form-status" role="status"></p>
     </form>
   </div>
