@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IKEDA — Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{ --ink:#1E2A22; --line:#D9E0D4; --paper:#F7F8F5; --clay:#B5572F; }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:system-ui,sans-serif;background:var(--paper);color:var(--ink);}
+  .wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+  h1{font-size:22px;margin:0 0 6px;}
+  .sub{color:#667;font-size:13.5px;margin:0 0 28px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:24px;margin-bottom:20px;}
+  .card h2{font-size:15px;margin:0 0 16px;text-transform:uppercase;letter-spacing:0.04em;color:#556;}
+  label{display:block;font-size:13px;color:#556;margin:14px 0 5px;}
+  label:first-of-type{margin-top:0;}
+  input,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:4px;font-size:14px;font-family:inherit;}
+  textarea{resize:vertical;}
+  input[type=color]{width:52px;height:34px;padding:2px;cursor:pointer;}
+  .color-row{display:flex;align-items:center;gap:10px;}
+  .color-row input[type=text]{flex:1;}
+  button{cursor:pointer;border:none;border-radius:4px;font-size:14px;font-weight:600;padding:11px 20px;}
+  .btn-primary{background:var(--ink);color:#fff;}
+  .btn-save{background:var(--clay);color:#fff;position:sticky;bottom:16px;width:100%;padding:14px;font-size:15px;}
+  .status{font-size:13.5px;margin-top:10px;min-height:1.2em;}
+  .status[data-s="ok"]{color:#2E7D32;}
+  .status[data-s="err"]{color:#C0392B;}
+  #loginView{max-width:360px;margin:80px auto;}
+  #appView{display:none;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+  .topbar a{font-size:13px;color:var(--clay);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="wrap">
+  <div class="card">
+    <h2>IKEDA Admin Login</h2>
+    <label>Username</label><input type="text" id="loginUser" autocomplete="username">
+    <label>Password</label><input type="password" id="loginPass" autocomplete="current-password">
+    <button class="btn-primary" style="margin-top:18px;width:100%;" onclick="login()">Log In</button>
+    <p class="status" id="loginStatus"></p>
+  </div>
+</div>
+
+<div id="appView" class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>Edit IKEDA Homepage</h1>
+      <p class="sub">Changes go live on the homepage immediately after saving.</p>
+    </div>
+    <a href="#" onclick="logout();return false;">Log out</a>
+  </div>
+
+  <div id="fields"></div>
+
+  <button class="btn-save" onclick="saveAll()">Save Changes</button>
+  <p class="status" id="saveStatus"></p>
+</div>
+
+<script>
+const API_BASE = window.IKEDA_API_BASE || "";
+let token = localStorage.getItem("ikeda-admin-token");
+
+// Field definitions: key, label, input type, which section it's grouped under.
+const FIELDS = [
+  ["Brand", [
+    ["brand.logo_text", "Logo text", "text"],
+  ]],
+  ["Brand Colors", [
+    ["brand.color.paper", "Background", "color"],
+    ["brand.color.paper2", "Background (alt)", "color"],
+    ["brand.color.ink", "Text / Ink", "color"],
+    ["brand.color.inkSoft", "Muted text", "color"],
+    ["brand.color.clay", "Accent (buttons, links)", "color"],
+    ["brand.color.moss", "Secondary accent", "color"],
+    ["brand.color.line", "Hairlines / borders", "color"],
+  ]],
+  ["Navigation", [
+    ["nav.cta_text", "Shop button text", "text"],
+  ]],
+  ["Hero", [
+    ["hero.heading", "Heading", "text"],
+    ["hero.subheading", "Subheading", "textarea"],
+    ["hero.cta_text", "Button text", "text"],
+    ["hero.video_url", "Background video URL", "text"],
+  ]],
+  ["Product Ranges — Section Intro", [
+    ["lines.heading", "Heading", "text"],
+    ["lines.subheading", "Subheading", "textarea"],
+  ]],
+  ["Product Card 1", [
+    ["card1.title", "Title", "text"],
+    ["card1.body", "Description", "textarea"],
+    ["card1.image_url", "Image URL", "text"],
+  ]],
+  ["Product Card 2", [
+    ["card2.title", "Title", "text"],
+    ["card2.body", "Description", "textarea"],
+    ["card2.image_url", "Image URL", "text"],
+  ]],
+  ["Product Card 3", [
+    ["card3.title", "Title", "text"],
+    ["card3.body", "Description", "textarea"],
+    ["card3.image_url", "Image URL", "text"],
+  ]],
+  ["Statement Band", [
+    ["statement.quote", "Quote", "textarea"],
+    ["statement.attribution", "Attribution", "text"],
+    ["statement.video_url", "Background video URL", "text"],
+  ]],
+  ["About Us", [
+    ["about.heading", "Heading", "text"],
+    ["about.body", "Body", "textarea"],
+    ["about.image_url", "Image URL", "text"],
+  ]],
+  ["Our Story", [
+    ["story.heading", "Heading", "text"],
+    ["story.body", "Body", "textarea"],
+    ["story.image_url", "Image URL", "text"],
+  ]],
+  ["Wholesale Form", [
+    ["wholesale.heading", "Heading", "text"],
+    ["wholesale.subheading", "Subheading", "textarea"],
+  ]],
+  ["Contact Form", [
+    ["contact.heading", "Heading", "text"],
+    ["contact.subheading", "Subheading", "textarea"],
+  ]],
+  ["Newsletter", [
+    ["newsletter.heading", "Heading", "text"],
+    ["newsletter.subheading", "Subheading", "textarea"],
+  ]],
+  ["Footer", [
+    ["footer.legal", "Legal block (HTML allowed, e.g. <br>)", "textarea"],
+    ["footer.copyright", "Copyright line", "text"],
+  ]],
+];
+
+function renderFields(content) {
+  const container = document.getElementById("fields");
+  container.innerHTML = "";
+  FIELDS.forEach(([section, fields]) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const h2 = document.createElement("h2");
+    h2.textContent = section;
+    card.appendChild(h2);
+
+    fields.forEach(([key, label, type]) => {
+      const lbl = document.createElement("label");
+      lbl.textContent = label;
+      card.appendChild(lbl);
+
+      const value = content[key] || "";
+      if (type === "color") {
+        const row = document.createElement("div");
+        row.className = "color-row";
+        row.innerHTML = `<input type="color" data-key="${key}" value="${value}">
+                          <input type="text" data-key-text="${key}" value="${value}">`;
+        card.appendChild(row);
+        const colorInput = row.querySelector("[type=color]");
+        const textInput = row.querySelector("[type=text]");
+        colorInput.addEventListener("input", () => textInput.value = colorInput.value);
+        textInput.addEventListener("input", () => colorInput.value = textInput.value);
+      } else if (type === "textarea") {
+        const ta = document.createElement("textarea");
+        ta.rows = 3; ta.dataset.key = key; ta.value = value;
+        card.appendChild(ta);
+      } else {
+        const input = document.createElement("input");
+        input.type = "text"; input.dataset.key = key; input.value = value;
+        card.appendChild(input);
+      }
+    });
+    container.appendChild(card);
+  });
+}
+
+function collectValues() {
+  const values = {};
+  document.querySelectorAll("[data-key]").forEach((el) => { values[el.dataset.key] = el.value; });
+  return values;
+}
+
+async function loadAndShow() {
+  const res = await fetch(`${API_BASE}/api/content`);
+  const json = await res.json();
+  if (json.success) renderFields(json.data);
+}
+
+async function login() {
+  const username = document.getElementById("loginUser").value;
+  const password = document.getElementById("loginPass").value;
+  const status = document.getElementById("loginStatus");
+  status.textContent = "Logging in…"; status.removeAttribute("data-s");
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/login`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error);
+    token = json.token;
+    localStorage.setItem("ikeda-admin-token", token);
+    showApp();
+  } catch (err) {
+    status.textContent = err.message || "Login failed";
+    status.dataset.s = "err";
+  }
+}
+
+function logout() {
+  localStorage.removeItem("ikeda-admin-token");
+  token = null;
+  document.getElementById("appView").style.display = "none";
+  document.getElementById("loginView").style.display = "block";
+}
+
+async function showApp() {
+  document.getElementById("loginView").style.display = "none";
+  document.getElementById("appView").style.display = "block";
+  await loadAndShow();
+}
+
+async function saveAll() {
+  const status = document.getElementById("saveStatus");
+  status.textContent = "Saving…"; status.removeAttribute("data-s");
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/content`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(collectValues()),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error);
+    status.textContent = "Saved — live on the homepage now.";
+    status.dataset.s = "ok";
+  } catch (err) {
+    status.textContent = err.message || "Save failed";
+    status.dataset.s = "err";
+  }
+}
+
+// If a saved session exists, verify it still works before skipping login.
+(async function init() {
+  if (!token) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/me`, { headers: { Authorization: `Bearer ${token}` } });
+    const json = await res.json();
+    if (json.success) { showApp(); return; }
+  } catch {}
+  logout();
+})();
+</script>
+</body>
+</html>
