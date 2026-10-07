@@ -41,6 +41,8 @@
   .dropdown h4{font-family:var(--sans);font-size:12px;color:var(--ink-soft);margin:0 0 8px;font-weight:600;}
   .dropdown a{display:block;font-size:13.5px;padding:3px 0;color:var(--ink);}
   .dropdown a:hover{color:var(--clay);}
+  .theme-toggle{background:none;border:1px solid var(--line);border-radius:50%;width:38px;height:38px;
+    font-size:16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-right:14px;}
   .mobile-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
   @media (max-width:860px){
     .navlinks{display:none;}
@@ -160,6 +162,7 @@
       <li><a href="#">Offers</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light / dark mode">🌙</button>
     <a class="cta-btn" href="#">Shop Online</a>
     <button class="mobile-toggle" aria-label="Menu">☰</button>
   </nav>
@@ -307,6 +310,28 @@
 </footer>
 
 <script>
+  // Manual light/dark toggle — overrides the system's prefers-color-scheme
+  // via the same data-theme attribute the CSS already keys off.
+  (function () {
+    const btn = document.getElementById("themeToggle");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const saved = localStorage.getItem("ikeda-theme");
+    let current = saved || (systemPrefersDark ? "dark" : "light");
+
+    function apply(theme) {
+      document.documentElement.dataset.theme = theme;
+      btn.textContent = theme === "dark" ? "☀️" : "🌙";
+      current = theme;
+    }
+    apply(current);
+
+    btn.addEventListener("click", () => {
+      const next = current === "dark" ? "light" : "dark";
+      apply(next);
+      localStorage.setItem("ikeda-theme", next);
+    });
+  })();
+
   // One submit handler for every form on the page, regardless of type —
   // they all go to the same backend endpoint. Set window.IKEDA_API_BASE
   // before this script if the backend is hosted on a different origin
