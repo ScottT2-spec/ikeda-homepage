@@ -2,14 +2,37 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { sql } = require("@vercel/postgres");
+const { Pool } = require("pg");
 
 // Vercel doesn't run a persistent process (no app.listen here — Vercel
 // invokes this module as a function per request) and its filesystem is
-// not writable/persistent, so this talks to Vercel Postgres instead of
-// the SQLite file the server/ version uses for traditional hosting.
-// Same unified design either way: one database, one content table, one
+// not writable/persistent, so this talks to a hosted Postgres database
+// (Supabase, or any standard Postgres provider) via `pg` instead of the
+// SQLite file the server/ version uses for traditional hosting. Same
+// unified design either way: one database, one content table, one
 // submissions table, one admin table.
+//
+// Reads POSTGRES_URL first, DATABASE_URL as a fallback (Supabase's own
+// docs call it DATABASE_URL — supporting both avoids a naming mismatch).
+// Supabase: use the "Connection Pooling" string (port 6543), not the
+// direct connection — serverless functions open a fresh connection per
+// invocation, which exhausts a direct Postgres connection limit fast.
+const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+let pool = null;
+function getPool() {
+  if (!pool) {
+    if (!connectionString) {
+      throw new Error("No database configured — set POSTGRES_URL or DATABASE_URL in your Vercel env vars.");
+    }
+    pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
+  }
+  return pool;
+}
+// Tiny helper so the rest of the file reads close to the previous
+// sql`...` tagged-template version — db.query(text, params).
+function db() {
+  return { query: (text, params) => getPool().query(text, params) };
+}
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 const JWT_SECRET = process.env.JWT_SECRET || "dev-only-insecure-secret-change-me";
@@ -68,7 +91,8 @@ let initPromise = null;
 function ensureInit() {
   if (!initPromise) {
     initPromise = (async () => {
-      await sql`
+      const { query } = db();
+      await query(`
         CREATE TABLE IF NOT EXISTS submissions (
           id SERIAL PRIMARY KEY,
           type TEXT NOT NULL,
@@ -80,32 +104,32 @@ function ensureInit() {
           volume TEXT,
           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
-      `;
-      await sql`
+      `);
+      await query(`
         CREATE TABLE IF NOT EXISTS content (
           key TEXT PRIMARY KEY,
           value TEXT NOT NULL
         )
-      `;
-      await sql`
+      `);
+      await query(`
         CREATE TABLE IF NOT EXISTS admins (
           id SERIAL PRIMARY KEY,
           username TEXT NOT NULL UNIQUE,
           password_hash TEXT NOT NULL
         )
-      `;
+      `);
 
-      const { rows } = await sql`SELECT COUNT(*)::int AS c FROM admins`;
+      const { rows } = await query("SELECT COUNT(*)::int AS c FROM admins");
       if (rows[0].c === 0) {
         const username = process.env.ADMIN_USERNAME || "admin";
         const password = process.env.ADMIN_PASSWORD || "changeme";
         const hash = bcrypt.hashSync(password, 10);
-        await sql`INSERT INTO admins (username, password_hash) VALUES (${username}, ${hash})`;
+        await query("INSERT INTO admins (username, password_hash) VALUES ($1, $2)", [username, hash]);
         console.log(`Seeded admin account "${username}" — set ADMIN_USERNAME/ADMIN_PASSWORD in Vercel env vars before going live.`);
       }
 
       for (const [key, value] of Object.entries(CONTENT_DEFAULTS)) {
-        await sql`INSERT INTO content (key, value) VALUES (${key}, ${value}) ON CONFLICT (key) DO NOTHING`;
+        await query("INSERT INTO content (key, value) VALUES ($1, $2) ON CONFLICT (key) DO NOTHING", [key, value]);
       }
     })();
   }
@@ -151,19 +175,20 @@ app.post("/api/submissions", async (req, res) => {
     return res.status(400).json({ success: false, error: "Company name is required for a wholesale quote" });
   }
 
-  const { rows } = await sql`
-    INSERT INTO submissions (type, name, email, company, phone, message, volume)
-    VALUES (
-      ${type},
-      ${name ? String(name).slice(0, 200) : null},
-      ${String(email).slice(0, 320)},
-      ${company ? String(company).slice(0, 200) : null},
-      ${phone ? String(phone).slice(0, 50) : null},
-      ${message ? String(message).slice(0, 5000) : null},
-      ${volume ? String(volume).slice(0, 100) : null}
-    )
-    RETURNING id
-  `;
+  const { rows } = await db().query(
+    `INSERT INTO submissions (type, name, email, company, phone, message, volume)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING id`,
+    [
+      type,
+      name ? String(name).slice(0, 200) : null,
+      String(email).slice(0, 320),
+      company ? String(company).slice(0, 200) : null,
+      phone ? String(phone).slice(0, 50) : null,
+      message ? String(message).slice(0, 5000) : null,
+      volume ? String(volume).slice(0, 100) : null,
+    ]
+  );
   res.json({ success: true, id: rows[0].id });
 });
 
@@ -172,12 +197,12 @@ app.get("/api/submissions", async (req, res) => {
   if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) {
     return res.status(401).json({ success: false, error: "Unauthorized" });
   }
-  const { rows } = await sql`SELECT * FROM submissions ORDER BY created_at DESC`;
+  const { rows } = await db().query("SELECT * FROM submissions ORDER BY created_at DESC");
   res.json({ success: true, data: rows });
 });
 
 app.get("/api/content", async (_req, res) => {
-  const { rows } = await sql`SELECT key, value FROM content`;
+  const { rows } = await db().query("SELECT key, value FROM content");
   res.json({ success: true, data: Object.fromEntries(rows.map((r) => [r.key, r.value])) });
 });
 
@@ -195,7 +220,7 @@ function requireAdmin(req, res, next) {
 
 app.post("/api/admin/login", async (req, res) => {
   const { username, password } = req.body || {};
-  const { rows } = username ? await sql`SELECT * FROM admins WHERE username = ${username}` : { rows: [] };
+  const { rows } = username ? await db().query("SELECT * FROM admins WHERE username = $1", [username]) : { rows: [] };
   const row = rows[0];
   if (!row || !bcrypt.compareSync(password || "", row.password_hash)) {
     return res.status(401).json({ success: false, error: "Invalid username or password" });
@@ -210,7 +235,7 @@ app.get("/api/admin/me", requireAdmin, (req, res) => {
 
 app.post("/api/admin/change-password", requireAdmin, async (req, res) => {
   const { currentPassword, newPassword } = req.body || {};
-  const { rows } = await sql`SELECT * FROM admins WHERE id = ${req.admin.sub}`;
+  const { rows } = await db().query("SELECT * FROM admins WHERE id = $1", [req.admin.sub]);
   const row = rows[0];
   if (!row || !bcrypt.compareSync(currentPassword || "", row.password_hash)) {
     return res.status(401).json({ success: false, error: "Current password is incorrect" });
@@ -218,7 +243,7 @@ app.post("/api/admin/change-password", requireAdmin, async (req, res) => {
   if (!newPassword || newPassword.length < 8) {
     return res.status(400).json({ success: false, error: "New password must be at least 8 characters" });
   }
-  await sql`UPDATE admins SET password_hash = ${bcrypt.hashSync(newPassword, 10)} WHERE id = ${row.id}`;
+  await db().query("UPDATE admins SET password_hash = $1 WHERE id = $2", [bcrypt.hashSync(newPassword, 10), row.id]);
   res.json({ success: true });
 });
 
@@ -230,10 +255,11 @@ app.put("/api/admin/content", requireAdmin, async (req, res) => {
     if (!(key in CONTENT_DEFAULTS)) return res.status(400).json({ success: false, error: `Unknown field: ${key}` });
   }
   for (const [key, value] of Object.entries(updates)) {
-    await sql`
-      INSERT INTO content (key, value) VALUES (${key}, ${String(value)})
-      ON CONFLICT (key) DO UPDATE SET value = ${String(value)}
-    `;
+    await db().query(
+      `INSERT INTO content (key, value) VALUES ($1, $2)
+       ON CONFLICT (key) DO UPDATE SET value = $2`,
+      [key, String(value)]
+    );
   }
   res.json({ success: true });
 });
