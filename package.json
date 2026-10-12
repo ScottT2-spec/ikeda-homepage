@@ -1,0 +1,13 @@
+{
+  "name": "ikeda-homepage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "IKEDA homepage + unified backend, deployed on Vercel (api/) or any Node host (server/).",
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0",
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3"
+  }
+}
