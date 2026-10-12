@@ -13,7 +13,12 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-only-insecure-secret-change-me
 // ---- one database, one place every submission lands, regardless of
 // which form on the site it came from (contact, wholesale quote, or
 // anything added later) ----
-const db = new Database(path.join(__dirname, "data.db"));
+// Configurable so production hosting can point this at a persistent
+// volume (e.g. Railway) instead of the container's throwaway filesystem
+// — without it, every redeploy would silently wipe the admin account,
+// all content edits, and every form submission.
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, "data.db");
+const db = new Database(DB_PATH);
 db.exec(`
   CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
