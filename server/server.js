@@ -181,13 +181,14 @@ app.post("/api/submissions", (req, res) => {
 
 // Minimal read-back so submissions are actually reachable without opening
 // the database file by hand — swap for real auth before going live.
-app.get("/api/submissions", (req, res) => {
-  const token = req.headers["x-admin-token"];
-  if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) {
-    return res.status(401).json({ success: false, error: "Unauthorized" });
-  }
+app.get("/api/admin/submissions", requireAdmin, (req, res) => {
   const rows = db.prepare("SELECT * FROM submissions ORDER BY created_at DESC").all();
   res.json({ success: true, data: rows });
+});
+
+app.delete("/api/admin/submissions/:id", requireAdmin, (req, res) => {
+  db.prepare("DELETE FROM submissions WHERE id = ?").run(req.params.id);
+  res.json({ success: true });
 });
 
 // ---- public: the homepage reads every editable field from here ----

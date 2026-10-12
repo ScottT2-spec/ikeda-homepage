@@ -192,13 +192,14 @@ app.post("/api/submissions", async (req, res) => {
   res.json({ success: true, id: rows[0].id });
 });
 
-app.get("/api/submissions", async (req, res) => {
-  const token = req.headers["x-admin-token"];
-  if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) {
-    return res.status(401).json({ success: false, error: "Unauthorized" });
-  }
+app.get("/api/admin/submissions", requireAdmin, async (req, res) => {
   const { rows } = await db().query("SELECT * FROM submissions ORDER BY created_at DESC");
   res.json({ success: true, data: rows });
+});
+
+app.delete("/api/admin/submissions/:id", requireAdmin, async (req, res) => {
+  await db().query("DELETE FROM submissions WHERE id = $1", [req.params.id]);
+  res.json({ success: true });
 });
 
 app.get("/api/content", async (_req, res) => {

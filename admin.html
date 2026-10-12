@@ -8,7 +8,7 @@
   :root{ --ink:#1E2A22; --line:#D9E0D4; --paper:#F7F8F5; --clay:#B5572F; }
   *{box-sizing:border-box;}
   body{margin:0;font-family:system-ui,sans-serif;background:var(--paper);color:var(--ink);}
-  .wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px;}
   h1{font-size:22px;margin:0 0 6px;}
   .sub{color:#667;font-size:13.5px;margin:0 0 28px;}
   .card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:24px;margin-bottom:20px;}
@@ -28,8 +28,30 @@
   .status[data-s="err"]{color:#C0392B;}
   #loginView{max-width:360px;margin:80px auto;}
   #appView{display:none;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
   .topbar a{font-size:13px;color:var(--clay);text-decoration:none;}
+
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;}
+  .tab{padding:10px 16px;font-size:13.5px;font-weight:600;color:#889;cursor:pointer;border-bottom:2px solid transparent;}
+  .tab.active{color:var(--ink);border-bottom-color:var(--clay);}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .sub-empty{color:#889;font-size:14px;padding:20px 0;text-align:center;}
+  .sub-item{border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:12px;}
+  .sub-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
+  .sub-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;
+    padding:3px 9px;border-radius:20px;color:#fff;}
+  .sub-badge[data-type=contact]{background:#4A6FA5;}
+  .sub-badge[data-type=wholesale]{background:var(--clay);}
+  .sub-badge[data-type=newsletter]{background:#5C7A62;}
+  .sub-date{font-size:12px;color:#889;white-space:nowrap;}
+  .sub-row{font-size:14px;margin:3px 0;}
+  .sub-row b{color:#556;font-weight:600;margin-right:4px;}
+  .sub-del{background:none;color:#C0392B;font-size:12px;font-weight:600;padding:4px 8px;}
+  .sub-filters{display:flex;gap:8px;margin-bottom:18px;}
+  .sub-filters button{background:#fff;border:1px solid var(--line);color:#556;font-weight:600;padding:7px 14px;}
+  .sub-filters button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
 </style>
 </head>
 <body>
@@ -47,21 +69,50 @@
 <div id="appView" class="wrap">
   <div class="topbar">
     <div>
-      <h1>Edit IKEDA Homepage</h1>
-      <p class="sub">Changes go live on the homepage immediately after saving.</p>
+      <h1>IKEDA Admin</h1>
+      <p class="sub">Homepage content, form submissions, and your account — all from here.</p>
     </div>
     <a href="#" onclick="logout();return false;">Log out</a>
   </div>
 
-  <div id="fields"></div>
+  <div class="tabs">
+    <div class="tab active" data-tab="content" onclick="switchTab('content')">Homepage Content</div>
+    <div class="tab" data-tab="submissions" onclick="switchTab('submissions')">Submissions <span id="subCount"></span></div>
+    <div class="tab" data-tab="account" onclick="switchTab('account')">Account</div>
+  </div>
 
-  <button class="btn-save" onclick="saveAll()">Save Changes</button>
-  <p class="status" id="saveStatus"></p>
+  <div id="panel-content" class="panel active">
+    <div id="fields"></div>
+    <button class="btn-save" onclick="saveAll()">Save Changes</button>
+    <p class="status" id="saveStatus"></p>
+  </div>
+
+  <div id="panel-submissions" class="panel">
+    <div class="sub-filters" id="subFilters">
+      <button class="active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button data-filter="wholesale" onclick="setFilter('wholesale')">Wholesale</button>
+      <button data-filter="contact" onclick="setFilter('contact')">Contact</button>
+      <button data-filter="newsletter" onclick="setFilter('newsletter')">Newsletter</button>
+    </div>
+    <div id="subList"></div>
+  </div>
+
+  <div id="panel-account" class="panel">
+    <div class="card">
+      <h2>Change Password</h2>
+      <label>Current Password</label><input type="password" id="curPass">
+      <label>New Password (min 8 characters)</label><input type="password" id="newPass">
+      <button class="btn-primary" style="margin-top:18px;" onclick="changePassword()">Update Password</button>
+      <p class="status" id="pwStatus"></p>
+    </div>
+  </div>
 </div>
 
 <script>
 const API_BASE = window.IKEDA_API_BASE || "";
 let token = localStorage.getItem("ikeda-admin-token");
+let allSubmissions = [];
+let currentFilter = "all";
 
 // Field definitions: key, label, input type, which section it's grouped under.
 const FIELDS = [
@@ -184,10 +235,80 @@ function collectValues() {
   return values;
 }
 
+function switchTab(name) {
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+  document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === `panel-${name}`));
+  if (name === "submissions") loadSubmissions();
+}
+
+function setFilter(type) {
+  currentFilter = type;
+  document.querySelectorAll("#subFilters button").forEach((b) => b.classList.toggle("active", b.dataset.filter === type));
+  renderSubmissions();
+}
+
+function escapeHtml(s) {
+  const div = document.createElement("div");
+  div.textContent = s == null ? "" : s;
+  return div.innerHTML;
+}
+
+function renderSubmissions() {
+  const list = document.getElementById("subList");
+  const filtered = currentFilter === "all" ? allSubmissions : allSubmissions.filter((s) => s.type === currentFilter);
+  document.getElementById("subCount").textContent = allSubmissions.length ? `(${allSubmissions.length})` : "";
+
+  if (!filtered.length) {
+    list.innerHTML = `<p class="sub-empty">No ${currentFilter === "all" ? "" : currentFilter + " "}submissions yet.</p>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map((s) => {
+    const date = new Date(s.created_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+    const rows = [];
+    if (s.name) rows.push(`<div class="sub-row"><b>Name:</b>${escapeHtml(s.name)}</div>`);
+    rows.push(`<div class="sub-row"><b>Email:</b>${escapeHtml(s.email)}</div>`);
+    if (s.company) rows.push(`<div class="sub-row"><b>Company:</b>${escapeHtml(s.company)}</div>`);
+    if (s.phone) rows.push(`<div class="sub-row"><b>Phone:</b>${escapeHtml(s.phone)}</div>`);
+    if (s.volume) rows.push(`<div class="sub-row"><b>Est. volume:</b>${escapeHtml(s.volume)}</div>`);
+    if (s.message) rows.push(`<div class="sub-row"><b>Message:</b>${escapeHtml(s.message)}</div>`);
+    return `<div class="sub-item">
+      <div class="sub-item-top">
+        <div><span class="sub-badge" data-type="${s.type}">${s.type}</span></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="sub-date">${date}</span>
+          <button class="sub-del" onclick="deleteSubmission(${s.id})">Delete</button>
+        </div>
+      </div>
+      ${rows.join("")}
+    </div>`;
+  }).join("");
+}
+
+async function loadSubmissions() {
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/submissions`, { headers: { Authorization: `Bearer ${token}` } });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error);
+    allSubmissions = json.data;
+    renderSubmissions();
+  } catch (err) {
+    document.getElementById("subList").innerHTML = `<p class="sub-empty">${escapeHtml(err.message || "Failed to load submissions")}</p>`;
+  }
+}
+
+async function deleteSubmission(id) {
+  if (!confirm("Delete this submission? This can't be undone.")) return;
+  await fetch(`${API_BASE}/api/admin/submissions/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+  allSubmissions = allSubmissions.filter((s) => s.id !== id);
+  renderSubmissions();
+}
+
 async function loadAndShow() {
   const res = await fetch(`${API_BASE}/api/content`);
   const json = await res.json();
   if (json.success) renderFields(json.data);
+  loadSubmissions();
 }
 
 async function login() {
@@ -239,6 +360,29 @@ async function saveAll() {
     status.dataset.s = "ok";
   } catch (err) {
     status.textContent = err.message || "Save failed";
+    status.dataset.s = "err";
+  }
+}
+
+async function changePassword() {
+  const currentPassword = document.getElementById("curPass").value;
+  const newPassword = document.getElementById("newPass").value;
+  const status = document.getElementById("pwStatus");
+  status.textContent = "Updating…"; status.removeAttribute("data-s");
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/change-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error);
+    status.textContent = "Password updated.";
+    status.dataset.s = "ok";
+    document.getElementById("curPass").value = "";
+    document.getElementById("newPass").value = "";
+  } catch (err) {
+    status.textContent = err.message || "Failed to update password";
     status.dataset.s = "err";
   }
 }

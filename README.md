@@ -33,9 +33,7 @@ Every heading, body of copy, image URL, the two background video URLs, and the s
 Note: the brand colors are one fixed palette — the homepage's light/dark toggle still works, but a custom color applies in both modes rather than having separate light/dark variants.
 
 ## Reading form submissions
-```
-curl -H "x-admin-token: <set an ADMIN_TOKEN env var for this>" https://<your-domain>/api/submissions
-```
+In the admin panel (`/admin.html`), use the **Submissions** tab — shows every Contact, Wholesale, and Newsletter submission (name, email, company, phone, message, volume where applicable), newest first, filterable by type, with delete. Same login as everything else — no separate token.
 
 ## Running locally against Supabase
 ```
