@@ -46,6 +46,12 @@ db.exec(`
     username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS page_views (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    path TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // Seed the admin account once, from env, on first boot only.
@@ -192,6 +198,29 @@ app.delete("/api/admin/submissions/:id", requireAdmin, (req, res) => {
 });
 
 // ---- public: the homepage reads every editable field from here ----
+app.post("/api/track", (req, res) => {
+  try {
+    const path = req.body?.path ? String(req.body.path).slice(0, 200) : "/";
+    db.prepare("INSERT INTO page_views (path) VALUES (?)").run(path);
+  } catch { /* swallow -- tracking failures should never surface to visitors */ }
+  res.json({ success: true });
+});
+
+app.get("/api/admin/analytics", requireAdmin, (req, res) => {
+  const totalViews = db.prepare("SELECT COUNT(*) AS c FROM page_views").get().c;
+  const viewsByDay = db.prepare(`
+    SELECT strftime('%Y-%m-%d', created_at) AS day, COUNT(*) AS c FROM page_views
+    WHERE created_at > datetime('now', '-14 days') GROUP BY day ORDER BY day
+  `).all();
+  const totalSubmissions = db.prepare("SELECT COUNT(*) AS c FROM submissions").get().c;
+  const submissionsByType = db.prepare("SELECT type, COUNT(*) AS c FROM submissions GROUP BY type").all();
+  const submissionsByDay = db.prepare(`
+    SELECT strftime('%Y-%m-%d', created_at) AS day, COUNT(*) AS c FROM submissions
+    WHERE created_at > datetime('now', '-14 days') GROUP BY day ORDER BY day
+  `).all();
+  res.json({ success: true, data: { totalViews, viewsByDay, totalSubmissions, submissionsByType, submissionsByDay } });
+});
+
 app.get("/api/content", (_req, res) => {
   const rows = db.prepare("SELECT key, value FROM content").all();
   const content = Object.fromEntries(rows.map((r) => [r.key, r.value]));

@@ -5,14 +5,15 @@
 <title>IKEDA — Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  :root{ --ink:#1E2A22; --line:#D9E0D4; --paper:#F7F8F5; --clay:#B5572F; }
+  :root{
+    --ink:#1E2A22; --line:#D9E0D4; --paper:#F7F8F5; --clay:#B5572F; --moss:#5C7A62;
+    --sidebar-w:230px;
+  }
   *{box-sizing:border-box;}
   body{margin:0;font-family:system-ui,sans-serif;background:var(--paper);color:var(--ink);}
-  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px;}
-  h1{font-size:22px;margin:0 0 6px;}
-  .sub{color:#667;font-size:13.5px;margin:0 0 28px;}
-  .card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:24px;margin-bottom:20px;}
-  .card h2{font-size:15px;margin:0 0 16px;text-transform:uppercase;letter-spacing:0.04em;color:#556;}
+  h1{font-size:21px;margin:0;}
+  h2{font-size:15px;margin:0 0 16px;text-transform:uppercase;letter-spacing:0.04em;color:#556;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;margin-bottom:18px;}
   label{display:block;font-size:13px;color:#556;margin:14px 0 5px;}
   label:first-of-type{margin-top:0;}
   input,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:4px;font-size:14px;font-family:inherit;}
@@ -26,37 +27,81 @@
   .status{font-size:13.5px;margin-top:10px;min-height:1.2em;}
   .status[data-s="ok"]{color:#2E7D32;}
   .status[data-s="err"]{color:#C0392B;}
-  #loginView{max-width:360px;margin:80px auto;}
-  #appView{display:none;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-  .topbar a{font-size:13px;color:var(--clay);text-decoration:none;}
 
-  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;}
-  .tab{padding:10px 16px;font-size:13.5px;font-weight:600;color:#889;cursor:pointer;border-bottom:2px solid transparent;}
-  .tab.active{color:var(--ink);border-bottom-color:var(--clay);}
+  /* ---- login ---- */
+  #loginView{max-width:360px;margin:80px auto;padding:0 24px;}
+
+  /* ---- shell: sidebar + main ---- */
+  #appView{display:none;}
+  .shell{display:flex;min-height:100vh;}
+
+  .sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--ink);color:#fff;
+    display:flex;flex-direction:column;padding:22px 14px;position:fixed;top:0;bottom:0;left:0;z-index:30;
+    transform:translateX(0);transition:transform 0.2s ease;}
+  .sidebar-brand{font-size:18px;font-weight:700;padding:0 10px 22px;border-bottom:1px solid rgba(255,255,255,0.12);margin-bottom:14px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:6px;color:rgba(255,255,255,0.75);
+    font-size:14px;font-weight:600;cursor:pointer;margin-bottom:2px;}
+  .nav-item:hover{background:rgba(255,255,255,0.06);}
+  .nav-item.active{background:var(--clay);color:#fff;}
+  .nav-item .count{margin-left:auto;background:rgba(255,255,255,0.15);font-size:11px;padding:2px 7px;border-radius:20px;}
+  .nav-item.active .count{background:rgba(255,255,255,0.25);}
+  .sidebar-foot{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,0.12);}
+  .sidebar-foot a{display:block;color:rgba(255,255,255,0.6);font-size:13px;text-decoration:none;padding:8px 12px;}
+
+  .main{margin-left:var(--sidebar-w);flex:1;min-width:0;}
+  .topbar{display:none;align-items:center;gap:14px;padding:14px 18px;background:#fff;border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:20;}
+  .hamburger{background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:var(--ink);padding:4px;}
+  .main-inner{max-width:900px;margin:0 auto;padding:28px 24px 80px;}
+  .backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:25;}
+
+  @media (max-width:860px){
+    .sidebar{transform:translateX(-100%);}
+    .sidebar.open{transform:translateX(0);}
+    .main{margin-left:0;}
+    .topbar{display:flex;}
+    .backdrop.show{display:block;}
+  }
+
   .panel{display:none;}
   .panel.active{display:block;}
+  .panel-head{margin-bottom:22px;}
+  .panel-head p{color:#667;font-size:13.5px;margin:4px 0 0;}
 
+  /* ---- submissions ---- */
   .sub-empty{color:#889;font-size:14px;padding:20px 0;text-align:center;}
-  .sub-item{border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:12px;}
+  .sub-item{border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:12px;background:#fff;}
   .sub-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
   .sub-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;
     padding:3px 9px;border-radius:20px;color:#fff;}
   .sub-badge[data-type=contact]{background:#4A6FA5;}
   .sub-badge[data-type=wholesale]{background:var(--clay);}
-  .sub-badge[data-type=newsletter]{background:#5C7A62;}
+  .sub-badge[data-type=newsletter]{background:var(--moss);}
   .sub-date{font-size:12px;color:#889;white-space:nowrap;}
   .sub-row{font-size:14px;margin:3px 0;}
   .sub-row b{color:#556;font-weight:600;margin-right:4px;}
   .sub-del{background:none;color:#C0392B;font-size:12px;font-weight:600;padding:4px 8px;}
-  .sub-filters{display:flex;gap:8px;margin-bottom:18px;}
+  .sub-filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
   .sub-filters button{background:#fff;border:1px solid var(--line);color:#556;font-weight:600;padding:7px 14px;}
   .sub-filters button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  /* ---- analytics ---- */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px;}
+  .stat-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;}
+  .stat-num{font-size:30px;font-weight:700;line-height:1.1;}
+  .stat-label{font-size:12.5px;color:#889;margin-top:4px;}
+  .chart-card svg{width:100%;height:160px;display:block;}
+  .chart-bar{fill:var(--clay);}
+  .chart-bar.alt{fill:var(--moss);}
+  .chart-axis{font-size:9px;fill:#889;}
+  .legend{display:flex;gap:16px;font-size:12.5px;color:#556;margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
 </style>
 </head>
 <body>
 
-<div id="loginView" class="wrap">
+<div id="loginView">
   <div class="card">
     <h2>IKEDA Admin Login</h2>
     <label>Username</label><input type="text" id="loginUser" autocomplete="username">
@@ -66,44 +111,76 @@
   </div>
 </div>
 
-<div id="appView" class="wrap">
-  <div class="topbar">
-    <div>
-      <h1>IKEDA Admin</h1>
-      <p class="sub">Homepage content, form submissions, and your account — all from here.</p>
-    </div>
-    <a href="#" onclick="logout();return false;">Log out</a>
-  </div>
+<div id="appView">
+  <div class="shell">
+    <div class="backdrop" id="backdrop" onclick="closeSidebar()"></div>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="content" onclick="switchTab('content')">Homepage Content</div>
-    <div class="tab" data-tab="submissions" onclick="switchTab('submissions')">Submissions <span id="subCount"></span></div>
-    <div class="tab" data-tab="account" onclick="switchTab('account')">Account</div>
-  </div>
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-brand">IKEDA Admin</div>
+      <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">📝 Dashboard</div>
+      <div class="nav-item" data-tab="analytics" onclick="switchTab('analytics')">📊 Analytics</div>
+      <div class="nav-item" data-tab="submissions" onclick="switchTab('submissions')">📥 Submissions <span class="count" id="subCount">0</span></div>
+      <div class="nav-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Settings</div>
+      <div class="sidebar-foot"><a href="#" onclick="logout();return false;">Log out</a></div>
+    </nav>
 
-  <div id="panel-content" class="panel active">
-    <div id="fields"></div>
-    <button class="btn-save" onclick="saveAll()">Save Changes</button>
-    <p class="status" id="saveStatus"></p>
-  </div>
+    <div class="main">
+      <div class="topbar">
+        <button class="hamburger" onclick="openSidebar()" aria-label="Menu">☰</button>
+        <h1 id="topbarTitle">Dashboard</h1>
+      </div>
 
-  <div id="panel-submissions" class="panel">
-    <div class="sub-filters" id="subFilters">
-      <button class="active" data-filter="all" onclick="setFilter('all')">All</button>
-      <button data-filter="wholesale" onclick="setFilter('wholesale')">Wholesale</button>
-      <button data-filter="contact" onclick="setFilter('contact')">Contact</button>
-      <button data-filter="newsletter" onclick="setFilter('newsletter')">Newsletter</button>
-    </div>
-    <div id="subList"></div>
-  </div>
+      <div class="main-inner">
 
-  <div id="panel-account" class="panel">
-    <div class="card">
-      <h2>Change Password</h2>
-      <label>Current Password</label><input type="password" id="curPass">
-      <label>New Password (min 8 characters)</label><input type="password" id="newPass">
-      <button class="btn-primary" style="margin-top:18px;" onclick="changePassword()">Update Password</button>
-      <p class="status" id="pwStatus"></p>
+        <div id="panel-dashboard" class="panel active">
+          <div class="panel-head"><h1>Homepage Content</h1><p>Every field here is live on the homepage immediately after saving.</p></div>
+          <div id="fields"></div>
+          <button class="btn-save" onclick="saveAll()">Save Changes</button>
+          <p class="status" id="saveStatus"></p>
+        </div>
+
+        <div id="panel-analytics" class="panel">
+          <div class="panel-head"><h1>Analytics</h1><p>Page views and form submissions, last 14 days.</p></div>
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-num" id="statViews">—</div><div class="stat-label">Total page views</div></div>
+            <div class="stat-card"><div class="stat-num" id="statSubs">—</div><div class="stat-label">Total submissions</div></div>
+            <div class="stat-card"><div class="stat-num" id="statWholesale">—</div><div class="stat-label">Wholesale quotes</div></div>
+            <div class="stat-card"><div class="stat-num" id="statNewsletter">—</div><div class="stat-label">Newsletter signups</div></div>
+          </div>
+          <div class="card chart-card">
+            <h2>Page Views — last 14 days</h2>
+            <svg id="viewsChart" viewBox="0 0 560 160" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="card chart-card">
+            <h2>Submissions — last 14 days</h2>
+            <svg id="subsChart" viewBox="0 0 560 160" preserveAspectRatio="none"></svg>
+            <div class="legend"><span><i style="background:var(--clay)"></i>Submissions</span></div>
+          </div>
+        </div>
+
+        <div id="panel-submissions" class="panel">
+          <div class="panel-head"><h1>Submissions</h1><p>Every Contact, Wholesale, and Newsletter form entry.</p></div>
+          <div class="sub-filters" id="subFilters">
+            <button class="active" data-filter="all" onclick="setFilter('all')">All</button>
+            <button data-filter="wholesale" onclick="setFilter('wholesale')">Wholesale</button>
+            <button data-filter="contact" onclick="setFilter('contact')">Contact</button>
+            <button data-filter="newsletter" onclick="setFilter('newsletter')">Newsletter</button>
+          </div>
+          <div id="subList"></div>
+        </div>
+
+        <div id="panel-settings" class="panel">
+          <div class="panel-head"><h1>Settings</h1><p>Your admin account.</p></div>
+          <div class="card">
+            <h2>Change Password</h2>
+            <label>Current Password</label><input type="password" id="curPass">
+            <label>New Password (min 8 characters)</label><input type="password" id="newPass">
+            <button class="btn-primary" style="margin-top:18px;" onclick="changePassword()">Update Password</button>
+            <p class="status" id="pwStatus"></p>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
@@ -113,12 +190,10 @@ const API_BASE = window.IKEDA_API_BASE || "";
 let token = localStorage.getItem("ikeda-admin-token");
 let allSubmissions = [];
 let currentFilter = "all";
+const TAB_TITLES = { dashboard: "Dashboard", analytics: "Analytics", submissions: "Submissions", settings: "Settings" };
 
-// Field definitions: key, label, input type, which section it's grouped under.
 const FIELDS = [
-  ["Brand", [
-    ["brand.logo_text", "Logo text", "text"],
-  ]],
+  ["Brand", [["brand.logo_text", "Logo text", "text"]]],
   ["Brand Colors", [
     ["brand.color.paper", "Background", "color"],
     ["brand.color.paper2", "Background (alt)", "color"],
@@ -128,9 +203,7 @@ const FIELDS = [
     ["brand.color.moss", "Secondary accent", "color"],
     ["brand.color.line", "Hairlines / borders", "color"],
   ]],
-  ["Navigation", [
-    ["nav.cta_text", "Shop button text", "text"],
-  ]],
+  ["Navigation", [["nav.cta_text", "Shop button text", "text"]]],
   ["Hero", [
     ["hero.heading", "Heading", "text"],
     ["hero.subheading", "Subheading", "textarea"],
@@ -142,19 +215,13 @@ const FIELDS = [
     ["lines.subheading", "Subheading", "textarea"],
   ]],
   ["Product Card 1", [
-    ["card1.title", "Title", "text"],
-    ["card1.body", "Description", "textarea"],
-    ["card1.image_url", "Image URL", "text"],
+    ["card1.title", "Title", "text"], ["card1.body", "Description", "textarea"], ["card1.image_url", "Image URL", "text"],
   ]],
   ["Product Card 2", [
-    ["card2.title", "Title", "text"],
-    ["card2.body", "Description", "textarea"],
-    ["card2.image_url", "Image URL", "text"],
+    ["card2.title", "Title", "text"], ["card2.body", "Description", "textarea"], ["card2.image_url", "Image URL", "text"],
   ]],
   ["Product Card 3", [
-    ["card3.title", "Title", "text"],
-    ["card3.body", "Description", "textarea"],
-    ["card3.image_url", "Image URL", "text"],
+    ["card3.title", "Title", "text"], ["card3.body", "Description", "textarea"], ["card3.image_url", "Image URL", "text"],
   ]],
   ["Statement Band", [
     ["statement.quote", "Quote", "textarea"],
@@ -162,30 +229,22 @@ const FIELDS = [
     ["statement.video_url", "Background video URL", "text"],
   ]],
   ["About Us", [
-    ["about.heading", "Heading", "text"],
-    ["about.body", "Body", "textarea"],
-    ["about.image_url", "Image URL", "text"],
+    ["about.heading", "Heading", "text"], ["about.body", "Body", "textarea"], ["about.image_url", "Image URL", "text"],
   ]],
   ["Our Story", [
-    ["story.heading", "Heading", "text"],
-    ["story.body", "Body", "textarea"],
-    ["story.image_url", "Image URL", "text"],
+    ["story.heading", "Heading", "text"], ["story.body", "Body", "textarea"], ["story.image_url", "Image URL", "text"],
   ]],
   ["Wholesale Form", [
-    ["wholesale.heading", "Heading", "text"],
-    ["wholesale.subheading", "Subheading", "textarea"],
+    ["wholesale.heading", "Heading", "text"], ["wholesale.subheading", "Subheading", "textarea"],
   ]],
   ["Contact Form", [
-    ["contact.heading", "Heading", "text"],
-    ["contact.subheading", "Subheading", "textarea"],
+    ["contact.heading", "Heading", "text"], ["contact.subheading", "Subheading", "textarea"],
   ]],
   ["Newsletter", [
-    ["newsletter.heading", "Heading", "text"],
-    ["newsletter.subheading", "Subheading", "textarea"],
+    ["newsletter.heading", "Heading", "text"], ["newsletter.subheading", "Subheading", "textarea"],
   ]],
   ["Footer", [
-    ["footer.legal", "Legal block (HTML allowed, e.g. <br>)", "textarea"],
-    ["footer.copyright", "Copyright line", "text"],
+    ["footer.legal", "Legal block (HTML allowed, e.g. <br>)", "textarea"], ["footer.copyright", "Copyright line", "text"],
   ]],
 ];
 
@@ -198,18 +257,15 @@ function renderFields(content) {
     const h2 = document.createElement("h2");
     h2.textContent = section;
     card.appendChild(h2);
-
     fields.forEach(([key, label, type]) => {
       const lbl = document.createElement("label");
       lbl.textContent = label;
       card.appendChild(lbl);
-
       const value = content[key] || "";
       if (type === "color") {
         const row = document.createElement("div");
         row.className = "color-row";
-        row.innerHTML = `<input type="color" data-key="${key}" value="${value}">
-                          <input type="text" data-key-text="${key}" value="${value}">`;
+        row.innerHTML = `<input type="color" data-key="${key}" value="${value}"><input type="text" data-key-text="${key}" value="${value}">`;
         card.appendChild(row);
         const colorInput = row.querySelector("[type=color]");
         const textInput = row.querySelector("[type=text]");
@@ -235,10 +291,16 @@ function collectValues() {
   return values;
 }
 
+function openSidebar() { document.getElementById("sidebar").classList.add("open"); document.getElementById("backdrop").classList.add("show"); }
+function closeSidebar() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("backdrop").classList.remove("show"); }
+
 function switchTab(name) {
-  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+  document.querySelectorAll(".nav-item").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
   document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === `panel-${name}`));
+  document.getElementById("topbarTitle").textContent = TAB_TITLES[name];
+  closeSidebar();
   if (name === "submissions") loadSubmissions();
+  if (name === "analytics") loadAnalytics();
 }
 
 function setFilter(type) {
@@ -256,13 +318,12 @@ function escapeHtml(s) {
 function renderSubmissions() {
   const list = document.getElementById("subList");
   const filtered = currentFilter === "all" ? allSubmissions : allSubmissions.filter((s) => s.type === currentFilter);
-  document.getElementById("subCount").textContent = allSubmissions.length ? `(${allSubmissions.length})` : "";
+  document.getElementById("subCount").textContent = allSubmissions.length;
 
   if (!filtered.length) {
     list.innerHTML = `<p class="sub-empty">No ${currentFilter === "all" ? "" : currentFilter + " "}submissions yet.</p>`;
     return;
   }
-
   list.innerHTML = filtered.map((s) => {
     const date = new Date(s.created_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
     const rows = [];
@@ -274,7 +335,7 @@ function renderSubmissions() {
     if (s.message) rows.push(`<div class="sub-row"><b>Message:</b>${escapeHtml(s.message)}</div>`);
     return `<div class="sub-item">
       <div class="sub-item-top">
-        <div><span class="sub-badge" data-type="${s.type}">${s.type}</span></div>
+        <span class="sub-badge" data-type="${s.type}">${s.type}</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="sub-date">${date}</span>
           <button class="sub-del" onclick="deleteSubmission(${s.id})">Delete</button>
@@ -302,6 +363,51 @@ async function deleteSubmission(id) {
   await fetch(`${API_BASE}/api/admin/submissions/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
   allSubmissions = allSubmissions.filter((s) => s.id !== id);
   renderSubmissions();
+}
+
+function drawBarChart(svgId, dayCounts, color) {
+  const svg = document.getElementById(svgId);
+  const days = [];
+  const today = new Date();
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const map = Object.fromEntries(dayCounts.map((r) => [r.day, r.c]));
+  const values = days.map((d) => map[d] || 0);
+  const max = Math.max(1, ...values);
+  const w = 560, h = 160, padBottom = 18, barGap = 4;
+  const barW = (w / values.length) - barGap;
+  let svgContent = "";
+  values.forEach((v, i) => {
+    const barH = (v / max) * (h - padBottom - 8);
+    const x = i * (barW + barGap);
+    const y = h - padBottom - barH;
+    svgContent += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" class="chart-bar" fill="${color}" rx="2"></rect>`;
+    if (i % 2 === 0) {
+      const label = days[i].slice(5).replace("-", "/");
+      svgContent += `<text x="${x + barW / 2}" y="${h - 4}" text-anchor="middle" class="chart-axis">${label}</text>`;
+    }
+  });
+  svg.innerHTML = svgContent;
+}
+
+async function loadAnalytics() {
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/analytics`, { headers: { Authorization: `Bearer ${token}` } });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error);
+    const d = json.data;
+    document.getElementById("statViews").textContent = d.totalViews;
+    document.getElementById("statSubs").textContent = d.totalSubmissions;
+    const byType = Object.fromEntries(d.submissionsByType.map((r) => [r.type, r.c]));
+    document.getElementById("statWholesale").textContent = byType.wholesale || 0;
+    document.getElementById("statNewsletter").textContent = byType.newsletter || 0;
+    drawBarChart("viewsChart", d.viewsByDay, "#5C7A62");
+    drawBarChart("subsChart", d.submissionsByDay, "#B5572F");
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function loadAndShow() {
@@ -387,7 +493,6 @@ async function changePassword() {
   }
 }
 
-// If a saved session exists, verify it still works before skipping login.
 (async function init() {
   if (!token) return;
   try {

@@ -118,6 +118,13 @@ function ensureInit() {
           password_hash TEXT NOT NULL
         )
       `);
+      await query(`
+        CREATE TABLE IF NOT EXISTS page_views (
+          id SERIAL PRIMARY KEY,
+          path TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+      `);
 
       const { rows } = await query("SELECT COUNT(*)::int AS c FROM admins");
       if (rows[0].c === 0) {
@@ -200,6 +207,42 @@ app.get("/api/admin/submissions", requireAdmin, async (req, res) => {
 app.delete("/api/admin/submissions/:id", requireAdmin, async (req, res) => {
   await db().query("DELETE FROM submissions WHERE id = $1", [req.params.id]);
   res.json({ success: true });
+});
+
+// Public, fire-and-forget -- called once per homepage load. Never blocks
+// or errors the page if it fails; analytics is a nice-to-have, not a
+// dependency of the site working.
+app.post("/api/track", async (req, res) => {
+  try {
+    const path = req.body?.path ? String(req.body.path).slice(0, 200) : "/";
+    await db().query("INSERT INTO page_views (path) VALUES ($1)", [path]);
+  } catch { /* swallow -- tracking failures should never surface to visitors */ }
+  res.json({ success: true });
+});
+
+app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
+  const { query } = db();
+  const [totalViews, viewsByDay, totalSubs, subsByType, subsByDay] = await Promise.all([
+    query("SELECT COUNT(*)::int AS c FROM page_views"),
+    query(`SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, COUNT(*)::int AS c
+           FROM page_views WHERE created_at > NOW() - INTERVAL '14 days'
+           GROUP BY day ORDER BY day`),
+    query("SELECT COUNT(*)::int AS c FROM submissions"),
+    query("SELECT type, COUNT(*)::int AS c FROM submissions GROUP BY type"),
+    query(`SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, COUNT(*)::int AS c
+           FROM submissions WHERE created_at > NOW() - INTERVAL '14 days'
+           GROUP BY day ORDER BY day`),
+  ]);
+  res.json({
+    success: true,
+    data: {
+      totalViews: totalViews.rows[0].c,
+      viewsByDay: viewsByDay.rows,
+      totalSubmissions: totalSubs.rows[0].c,
+      submissionsByType: subsByType.rows,
+      submissionsByDay: subsByDay.rows,
+    },
+  });
 });
 
 app.get("/api/content", async (_req, res) => {

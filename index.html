@@ -315,6 +315,17 @@
   // src (data-ck-video), raw HTML (data-ck-html), and the brand colors
   // (brand.color.*) as CSS custom properties. Whatever the admin panel
   // saves, this is what makes it show up here.
+  // Fire-and-forget page view ping for the admin Analytics tab. Never
+  // awaited, never blocks the page, silently does nothing if it fails.
+  (function trackView() {
+    const API_BASE = window.IKEDA_API_BASE || "";
+    fetch(`${API_BASE}/api/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: location.pathname }),
+    }).catch(() => {});
+  })();
+
   (async function loadContent() {
     const API_BASE = window.IKEDA_API_BASE || "";
     try {
