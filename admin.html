@@ -97,6 +97,33 @@
   .legend{display:flex;gap:16px;font-size:12.5px;color:#556;margin-top:10px;}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+
+  /* ---- dashboard overview ---- */
+  .welcome{margin-bottom:22px;}
+  .welcome p{color:#667;font-size:13.5px;margin:4px 0 0;}
+  .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start;}
+  @media (max-width:760px){ .dash-grid{grid-template-columns:1fr;} }
+  .recent-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+    padding:12px 0;border-bottom:1px solid var(--line);}
+  .recent-item:last-child{border-bottom:none;}
+  .recent-main{min-width:0;}
+  .recent-name{font-size:14px;font-weight:600;color:var(--ink);}
+  .recent-sub{font-size:12.5px;color:#889;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .recent-meta{text-align:right;flex-shrink:0;}
+  .recent-date{font-size:11.5px;color:#889;}
+  .quick-link{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:12px 14px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+  .quick-link:hover{border-color:var(--clay);}
+  .quick-link span.arrow{color:var(--clay);font-weight:700;}
+  .empty-note{color:#889;font-size:13.5px;}
+
+  /* ---- settings sub-nav ---- */
+  .subnav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .subnav button{background:#fff;border:1px solid var(--line);color:#556;font-weight:600;padding:8px 16px;}
+  .subnav button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .subpanel{display:none;}
+  .subpanel.active{display:block;}
 </style>
 </head>
 <body>
@@ -133,10 +160,30 @@
       <div class="main-inner">
 
         <div id="panel-dashboard" class="panel active">
-          <div class="panel-head"><h1>Homepage Content</h1><p>Every field here is live on the homepage immediately after saving.</p></div>
-          <div id="fields"></div>
-          <button class="btn-save" onclick="saveAll()">Save Changes</button>
-          <p class="status" id="saveStatus"></p>
+          <div class="panel-head welcome"><h1>Welcome back</h1><p id="dashDate"></p></div>
+
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-num" id="dashViews">—</div><div class="stat-label">Total page views</div></div>
+            <div class="stat-card"><div class="stat-num" id="dashSubs">—</div><div class="stat-label">Total submissions</div></div>
+            <div class="stat-card"><div class="stat-num" id="dashWholesale">—</div><div class="stat-label">Wholesale quotes</div></div>
+            <div class="stat-card"><div class="stat-num" id="dashNewsletter">—</div><div class="stat-label">Newsletter signups</div></div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="card">
+              <h2>Recent Submissions</h2>
+              <div id="dashRecent"><p class="empty-note">Loading…</p></div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:0;">
+                <h2>Quick Links</h2>
+                <button class="quick-link" onclick="switchTab('settings'); setSettingsTab('content')">Edit homepage content <span class="arrow">→</span></button>
+                <button class="quick-link" onclick="switchTab('submissions')">View all submissions <span class="arrow">→</span></button>
+                <button class="quick-link" onclick="switchTab('analytics')">Open analytics <span class="arrow">→</span></button>
+                <button class="quick-link" onclick="switchTab('settings'); setSettingsTab('account')">Account settings <span class="arrow">→</span></button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div id="panel-analytics" class="panel">
@@ -170,13 +217,28 @@
         </div>
 
         <div id="panel-settings" class="panel">
-          <div class="panel-head"><h1>Settings</h1><p>Your admin account.</p></div>
-          <div class="card">
-            <h2>Change Password</h2>
-            <label>Current Password</label><input type="password" id="curPass">
-            <label>New Password (min 8 characters)</label><input type="password" id="newPass">
-            <button class="btn-primary" style="margin-top:18px;" onclick="changePassword()">Update Password</button>
-            <p class="status" id="pwStatus"></p>
+          <div class="panel-head"><h1>Settings</h1><p>Site content and your admin account.</p></div>
+
+          <div class="subnav">
+            <button class="active" data-settings-tab="content" onclick="setSettingsTab('content')">Site Content</button>
+            <button data-settings-tab="account" onclick="setSettingsTab('account')">Account</button>
+          </div>
+
+          <div id="settings-content" class="subpanel active">
+            <p style="color:#667;font-size:13.5px;margin:-8px 0 18px;">Every field here is live on the homepage immediately after saving.</p>
+            <div id="fields"></div>
+            <button class="btn-save" onclick="saveAll()">Save Changes</button>
+            <p class="status" id="saveStatus"></p>
+          </div>
+
+          <div id="settings-account" class="subpanel">
+            <div class="card">
+              <h2>Change Password</h2>
+              <label>Current Password</label><input type="password" id="curPass">
+              <label>New Password (min 8 characters)</label><input type="password" id="newPass">
+              <button class="btn-primary" style="margin-top:18px;" onclick="changePassword()">Update Password</button>
+              <p class="status" id="pwStatus"></p>
+            </div>
           </div>
         </div>
 
@@ -190,6 +252,7 @@ const API_BASE = window.IKEDA_API_BASE || "";
 let token = localStorage.getItem("ikeda-admin-token");
 let allSubmissions = [];
 let currentFilter = "all";
+let fieldsLoaded = false;
 const TAB_TITLES = { dashboard: "Dashboard", analytics: "Analytics", submissions: "Submissions", settings: "Settings" };
 
 const FIELDS = [
@@ -298,8 +361,16 @@ function switchTab(name) {
   document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === `panel-${name}`));
   document.getElementById("topbarTitle").textContent = TAB_TITLES[name];
   closeSidebar();
+  if (name === "dashboard") loadDashboard();
   if (name === "submissions") loadSubmissions();
   if (name === "analytics") loadAnalytics();
+  if (name === "settings" && !fieldsLoaded) loadSettingsContent();
+}
+
+function setSettingsTab(name) {
+  document.querySelectorAll("[data-settings-tab]").forEach((b) => b.classList.toggle("active", b.dataset.settingsTab === name));
+  document.getElementById("settings-content").classList.toggle("active", name === "content");
+  document.getElementById("settings-account").classList.toggle("active", name === "account");
 }
 
 function setFilter(type) {
@@ -409,11 +480,45 @@ async function loadAnalytics() {
   }
 }
 
-async function loadAndShow() {
+async function loadSettingsContent() {
   const res = await fetch(`${API_BASE}/api/content`);
   const json = await res.json();
-  if (json.success) renderFields(json.data);
-  loadSubmissions();
+  if (json.success) { renderFields(json.data); fieldsLoaded = true; }
+}
+
+function renderRecentSubmissions() {
+  const el = document.getElementById("dashRecent");
+  if (!allSubmissions.length) { el.innerHTML = `<p class="empty-note">No submissions yet.</p>`; return; }
+  const recent = allSubmissions.slice(0, 5);
+  el.innerHTML = recent.map((s) => {
+    const date = new Date(s.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    return `<div class="recent-item">
+      <div class="recent-main">
+        <div class="recent-name">${escapeHtml(s.name || s.email)} <span class="sub-badge" data-type="${s.type}" style="font-size:10px;padding:2px 7px;vertical-align:1px;">${s.type}</span></div>
+        <div class="recent-sub">${escapeHtml(s.company || s.message || s.email)}</div>
+      </div>
+      <div class="recent-meta"><div class="recent-date">${date}</div></div>
+    </div>`;
+  }).join("");
+}
+
+async function loadDashboard() {
+  const today = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  document.getElementById("dashDate").textContent = today;
+  try {
+    const res = await fetch(`${API_BASE}/api/admin/analytics`, { headers: { Authorization: `Bearer ${token}` } });
+    const json = await res.json();
+    if (json.success) {
+      const d = json.data;
+      const byType = Object.fromEntries(d.submissionsByType.map((r) => [r.type, r.c]));
+      document.getElementById("dashViews").textContent = d.totalViews;
+      document.getElementById("dashSubs").textContent = d.totalSubmissions;
+      document.getElementById("dashWholesale").textContent = byType.wholesale || 0;
+      document.getElementById("dashNewsletter").textContent = byType.newsletter || 0;
+    }
+  } catch (err) { console.error(err); }
+  await loadSubmissions();
+  renderRecentSubmissions();
 }
 
 async function login() {
@@ -447,7 +552,7 @@ function logout() {
 async function showApp() {
   document.getElementById("loginView").style.display = "none";
   document.getElementById("appView").style.display = "block";
-  await loadAndShow();
+  await loadDashboard();
 }
 
 async function saveAll() {
