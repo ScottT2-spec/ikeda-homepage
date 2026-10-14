@@ -29,7 +29,15 @@
   /* ---- nav ---- */
   header{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--paper);border-bottom:1px solid var(--line);}
   nav.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
-  .logo{font-family:var(--serif);font-size:22px;font-weight:600;text-decoration:none;}
+  .logo{display:inline-flex;align-items:center;text-decoration:none;}
+  .logo-img{height:28px;width:auto;display:block;}
+  /* The source file is a white mark on transparent. Light mode needs a
+     dark mark against the light nav bar, so invert it there; dark mode
+     keeps it white as-is. The footer is always dark regardless of theme
+     (see .footer-band/.newsletter-band), so its logo never inverts. */
+  .nav-logo-img{filter:invert(1);}
+  :root[data-theme="dark"] .nav-logo-img{filter:none;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .nav-logo-img{filter:none;} }
   .navlinks{display:flex;align-items:center;gap:34px;list-style:none;margin:0;padding:0;}
   .navlinks > li{position:relative;}
   .navlinks a{text-decoration:none;font-size:14.5px;color:var(--ink-soft);}
@@ -102,7 +110,7 @@
   /* ---- footer ---- */
   footer{padding:60px 0 36px;border-top:1px solid var(--line);}
   .foot-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;padding-bottom:32px;border-bottom:1px solid var(--line);}
-  .foot-logo{font-family:var(--serif);font-size:20px;}
+  .foot-logo-img{height:24px;width:auto;}
   .social{display:flex;gap:16px;}
   .social a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;}
   .legal{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:24px 0;}
@@ -136,7 +144,7 @@
 
 <header>
   <nav class="wrap">
-    <a class="logo" href="#" data-ck="brand.logo_text">IKEDA</a>
+    <a class="logo" href="#"><img src="/logo-white.png" alt="IKEDA" class="logo-img nav-logo-img"></a>
     <ul class="navlinks">
       <li><a href="#">Products ▾</a>
         <div class="dropdown">
@@ -293,7 +301,7 @@
 <footer>
   <div class="wrap">
     <div class="foot-top">
-      <div class="foot-logo" data-ck="brand.logo_text">IKEDA</div>
+      <div class="foot-logo"><img src="/logo-white.png" alt="IKEDA" class="logo-img foot-logo-img"></div>
       <div class="social">
         <a href="#">Facebook</a><a href="#">Instagram</a><a href="#">YouTube</a>
       </div>
