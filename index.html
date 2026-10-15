@@ -8,15 +8,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* IKEDA brand palette (Option 1, Brand VI proposal): Off-White, Ink
+     Black, Light Antique Bronze (accent), Mist Purple (secondary
+     accent). paper-2/line/ink-soft aren't defined by the brand doc as
+     exact hex -- derived as close tints/blends of the named colors. */
   :root{
-    --paper:#F2F4EF; --paper-2:#EAEEE6; --ink:#1E2A22; --ink-soft:#49584D;
-    --clay:#B5572F; --moss:#5C7A62; --line:#D9E0D4;
+    --paper:#F5F2F0; --paper-2:#EDEAEA; --ink:#101010; --ink-soft:#706F6E;
+    --clay:#A68464; --moss:#9073BB; --line:#DAD7D5;
     --serif:'Fraunces',Georgia,serif; --sans:'Work Sans',system-ui,sans-serif;
   }
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){ --paper:#171D18; --paper-2:#1E251F; --ink:#EDEFE9; --ink-soft:#B7C1B6; --line:#30392F; }
+    :root:not([data-theme="light"]){ --paper:#141414; --paper-2:#1B1A1E; --ink:#F5F2F0; --ink-soft:#ADABAA; --line:#343333; }
   }
-  :root[data-theme="dark"]{ --paper:#171D18; --paper-2:#1E251F; --ink:#EDEFE9; --ink-soft:#B7C1B6; --line:#30392F; }
+  :root[data-theme="dark"]{ --paper:#141414; --paper-2:#1B1A1E; --ink:#F5F2F0; --ink-soft:#ADABAA; --line:#343333; }
   *{box-sizing:border-box;}
   html{scroll-padding-top:env(safe-area-inset-top,0px);}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;
@@ -89,9 +93,9 @@
   @media (max-width:860px){ .lines{grid-template-columns:1fr;} }
 
   /* ---- statement band ---- */
-  .statement{background:#12150F;color:#F3F4EE;padding:96px 0;}
+  .statement{background:#101010;color:#F5F2F0;padding:96px 0;}
   .statement .wrap{max-width:760px;}
-  .statement h2{font-size:clamp(26px,3.6vw,38px);line-height:1.3;font-weight:400;color:#F3F4EE;text-shadow:0 2px 12px rgba(0,0,0,0.5);}
+  .statement h2{font-size:clamp(26px,3.6vw,38px);line-height:1.3;font-weight:400;color:#F5F2F0;text-shadow:0 2px 12px rgba(0,0,0,0.5);}
   .statement .by{margin-top:22px;color:#D7DED3;font-size:14px;text-shadow:0 1px 8px rgba(0,0,0,0.5);}
 
   /* ---- story rows ---- */
@@ -131,8 +135,8 @@
   .form-status[data-state="error"]{color:var(--clay);}
   .form button[disabled]{opacity:0.6;cursor:default;}
 
-  .newsletter-band{background:#12150F;color:#F3F4EE;padding:72px 0;text-align:center;}
-  .newsletter-band h2{color:#F3F4EE;font-size:26px;}
+  .newsletter-band{background:#101010;color:#F5F2F0;padding:72px 0;text-align:center;}
+  .newsletter-band h2{color:#F5F2F0;font-size:26px;}
   .newsletter-band p{color:#C7D0C4;margin:12px 0 26px;}
   .newsletter-form{max-width:440px;margin:0 auto;}
   .newsletter-row{display:flex;gap:10px;}
