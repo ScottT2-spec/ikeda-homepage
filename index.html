@@ -324,9 +324,9 @@
 <script>
   // Pulls every editable field from the backend and applies it to the
   // matching element — text (data-ck), image src (data-ck-src), video
-  // src (data-ck-video), raw HTML (data-ck-html), and the brand colors
-  // (brand.color.*) as CSS custom properties. Whatever the admin panel
-  // saves, this is what makes it show up here.
+  // src (data-ck-video), raw HTML (data-ck-html). Brand colors are NOT
+  // part of this — they're fixed in the CSS above, not admin-editable,
+  // so a color change only ever happens through a code push.
   // Fire-and-forget page view ping for the admin Analytics tab. Never
   // awaited, never blocks the page, silently does nothing if it fails.
   (function trackView() {
@@ -365,15 +365,6 @@
           el.load();
         }
       });
-
-      const colorMap = {
-        "brand.color.paper": "--paper", "brand.color.paper2": "--paper-2",
-        "brand.color.ink": "--ink", "brand.color.inkSoft": "--ink-soft",
-        "brand.color.clay": "--clay", "brand.color.moss": "--moss", "brand.color.line": "--line",
-      };
-      for (const [key, cssVar] of Object.entries(colorMap)) {
-        if (content[key]) document.documentElement.style.setProperty(cssVar, content[key]);
-      }
     } catch {
       // Backend unreachable — page keeps its hardcoded fallback content.
     }

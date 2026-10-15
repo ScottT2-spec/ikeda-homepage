@@ -41,13 +41,12 @@ const VALID_TYPES = new Set(["contact", "wholesale", "newsletter"]);
 
 const CONTENT_DEFAULTS = {
   "brand.logo_text": "IKEDA",
-  "brand.color.paper": "#F5F2F0",
-  "brand.color.paper2": "#EDEAEA",
-  "brand.color.ink": "#101010",
-  "brand.color.inkSoft": "#706F6E",
-  "brand.color.clay": "#A68464",
-  "brand.color.moss": "#9073BB",
-  "brand.color.line": "#DAD7D5",
+
+
+
+
+
+
   "nav.cta_text": "Shop Online",
   "hero.heading": "Fragrance that holds up, at any volume.",
   "hero.subheading": "IKEDA manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.",

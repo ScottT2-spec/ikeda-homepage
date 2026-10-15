@@ -32,8 +32,8 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
-  -- Every editable piece of the homepage -- copy, image/video URLs, and
-  -- the brand color variables -- lives here as one flat key/value map.
+  -- Every editable piece of the homepage -- all copy and image/video URLs
+  -- lives here as one flat key/value map. Brand colors are intentionally NOT here -- they are fixed in index.html's CSS, not admin-editable.
   -- The homepage fetches this on load and the admin panel writes to it.
   -- One table, one edit surface, not a separate system per field type.
   CREATE TABLE IF NOT EXISTS content (
@@ -68,13 +68,12 @@ if (db.prepare("SELECT COUNT(*) AS c FROM admins").get().c === 0) {
 // that the DB is the source of truth.
 const CONTENT_DEFAULTS = {
   "brand.logo_text": "IKEDA",
-  "brand.color.paper": "#F5F2F0",
-  "brand.color.paper2": "#EDEAEA",
-  "brand.color.ink": "#101010",
-  "brand.color.inkSoft": "#706F6E",
-  "brand.color.clay": "#A68464",
-  "brand.color.moss": "#9073BB",
-  "brand.color.line": "#DAD7D5",
+
+
+
+
+
+
   "nav.cta_text": "Shop Online",
   "hero.heading": "Fragrance that holds up, at any volume.",
   "hero.subheading": "IKEDA manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.",
