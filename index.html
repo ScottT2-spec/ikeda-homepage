@@ -58,7 +58,25 @@
     font-size:16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-right:14px;}
   .mobile-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
   @media (max-width:860px){
+    header{position:relative;}
     .navlinks{display:none;}
+    .navlinks.open{
+      display:flex; flex-direction:column; align-items:stretch; gap:0;
+      position:absolute; top:100%; left:0; right:0; background:var(--paper);
+      border-bottom:1px solid var(--line); padding:8px 20px 16px; z-index:50;
+      box-shadow:0 12px 24px rgba(0,0,0,0.08);
+    }
+    .navlinks.open > li{border-bottom:1px solid var(--line);}
+    .navlinks.open > li:last-child{border-bottom:none;}
+    .navlinks.open > li > a{display:block;padding:13px 0;}
+    /* On touch, :hover never fires -- dropdowns open by tapping the
+       parent link instead, toggled via JS adding/removing this class. */
+    .navlinks.open .dropdown{
+      display:none; position:static; border:none; box-shadow:none; padding:0 0 10px;
+      grid-template-columns:1fr; min-width:0; background:none;
+    }
+    .navlinks.open > li.dropdown-open .dropdown{display:grid;}
+    .navlinks.open .dropdown > div{padding-bottom:4px;}
     .mobile-toggle{display:block;}
   }
 
@@ -177,7 +195,7 @@
     </ul>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light / dark mode">🌙</button>
     <a class="cta-btn" href="#" data-ck="nav.cta_text">Shop Online</a>
-    <button class="mobile-toggle" aria-label="Menu">☰</button>
+    <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Menu" aria-expanded="false">☰</button>
   </nav>
 </header>
 
@@ -369,6 +387,35 @@
     } catch {
       // Backend unreachable — page keeps its hardcoded fallback content.
     }
+  })();
+
+  // Mobile nav: the hamburger button had no click handler at all before —
+  // it rendered but did nothing. Wires it to show/hide .navlinks, and
+  // makes the Products/Explore dropdowns (which rely on :hover, which
+  // never fires on touch) open by tapping their parent link instead.
+  (function mobileNav() {
+    const toggle = document.getElementById("mobileMenuToggle");
+    const navlinks = document.querySelector(".navlinks");
+    if (!toggle || !navlinks) return;
+
+    toggle.addEventListener("click", () => {
+      const isOpen = navlinks.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.textContent = isOpen ? "✕" : "☰";
+      if (!isOpen) navlinks.querySelectorAll("li.dropdown-open").forEach((li) => li.classList.remove("dropdown-open"));
+    });
+
+    navlinks.querySelectorAll(":scope > li").forEach((li) => {
+      const link = li.querySelector(":scope > a");
+      const dropdown = li.querySelector(":scope > .dropdown");
+      if (!link || !dropdown) return; // plain links (Offers, Contact) navigate normally
+      link.addEventListener("click", (e) => {
+        if (window.innerWidth > 860) return; // desktop keeps normal :hover behavior
+        e.preventDefault();
+        const isOpen = li.classList.toggle("dropdown-open");
+        navlinks.querySelectorAll("li").forEach((other) => { if (other !== li) other.classList.remove("dropdown-open"); });
+      });
+    });
   })();
 
   // Manual light/dark toggle — overrides the system's prefers-color-scheme
