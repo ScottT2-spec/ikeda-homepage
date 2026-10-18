@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Commercial & Wholesale — IKEDA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F3EC; --paper-2:#E9E7E1; --ink:#141414; --ink-soft:#73726F;
+    --clay:#C97B3F; --moss:#97A99B; --line:#D7D4CE;
+    --serif:'Fraunces',Georgia,serif; --sans:'Work Sans',system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --paper:#141414; --paper-2:#231F1C; --ink:#F7F3EC; --ink-soft:#AEACA7; --line:#383837; }
+  }
+  :root[data-theme="dark"]{ --paper:#141414; --paper-2:#231F1C; --ink:#F7F3EC; --ink-soft:#AEACA7; --line:#383837; }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+  img,svg{max-width:100%;}
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;letter-spacing:-0.01em;}
+
+  header{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--paper);border-bottom:1px solid var(--line);}
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .logo{display:inline-flex;align-items:center;text-decoration:none;}
+  .logo-img{height:28px;width:auto;display:block;}
+  .nav-logo-img{filter:invert(1);}
+  :root[data-theme="dark"] .nav-logo-img{filter:none;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .nav-logo-img{filter:none;} }
+  .navlinks{display:flex;align-items:center;gap:34px;list-style:none;margin:0;padding:0;}
+  .navlinks > li{position:relative;}
+  .navlinks a{text-decoration:none;font-size:14.5px;color:var(--ink-soft);}
+  .navlinks > li > a:hover{color:var(--ink);}
+  .cta-btn{background:var(--ink);color:var(--paper);padding:10px 20px;border-radius:2px;font-size:14px;text-decoration:none;}
+  .dropdown{display:none;position:absolute;top:100%;left:-16px;background:var(--paper);border:1px solid var(--line);
+    padding:18px;min-width:460px;grid-template-columns:repeat(3,1fr);gap:22px;box-shadow:0 12px 24px rgba(0,0,0,0.06);}
+  .navlinks > li:hover .dropdown{display:grid;}
+  .dropdown h4{font-family:var(--sans);font-size:12px;color:var(--ink-soft);margin:0 0 8px;font-weight:600;}
+  .dropdown a{display:block;font-size:13.5px;padding:3px 0;color:var(--ink);}
+  .dropdown a:hover{color:var(--clay);}
+  .theme-toggle{background:none;border:1px solid var(--line);border-radius:50%;width:38px;height:38px;
+    font-size:16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-right:14px;}
+  .mobile-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
+  @media (max-width:860px){
+    header{position:relative;}
+    .navlinks{display:none;}
+    .navlinks.open{
+      display:flex; flex-direction:column; align-items:stretch; gap:0;
+      position:absolute; top:100%; left:0; right:0; background:var(--paper);
+      border-bottom:1px solid var(--line); padding:8px 20px 16px; z-index:50;
+      box-shadow:0 12px 24px rgba(0,0,0,0.08);
+    }
+    .navlinks.open > li{border-bottom:1px solid var(--line);}
+    .navlinks.open > li:last-child{border-bottom:none;}
+    .navlinks.open > li > a{display:block;padding:13px 0;}
+    .navlinks.open .dropdown{
+      display:none; position:static; border:none; box-shadow:none; padding:0 0 10px;
+      grid-template-columns:1fr; min-width:0; background:none;
+    }
+    .navlinks.open > li.dropdown-open .dropdown{display:grid;}
+    .navlinks.open .dropdown > div{padding-bottom:4px;}
+    .mobile-toggle{display:block;}
+  }
+
+  /* ---- story page ---- */
+  .story-hero{padding:88px 0 56px;border-bottom:1px solid var(--line);}
+  .story-hero .eyebrow{font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--clay);font-weight:600;}
+  .story-hero h1{font-size:clamp(34px,5vw,54px);line-height:1.1;margin:14px 0 20px;max-width:16ch;}
+  .story-hero .slogan{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.2vw,23px);color:var(--ink-soft);max-width:30ch;}
+  .founded-line{margin-top:28px;font-size:14.5px;color:var(--ink-soft);}
+  .founded-line b{color:var(--ink);}
+
+  .prose-section{padding:64px 0;border-bottom:1px solid var(--line);}
+  .prose-section .wrap{max-width:760px;}
+  .prose-section h2{font-size:clamp(24px,3vw,30px);margin-bottom:22px;}
+  .prose-section p{color:var(--ink-soft);font-size:16px;margin:0 0 18px;}
+  .prose-section .lede{font-size:18px;color:var(--ink);font-family:var(--serif);}
+  .pillar{margin:30px 0;padding-left:20px;border-left:2px solid var(--clay);}
+  .pillar h3{font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--clay);margin-bottom:8px;}
+  .pillar p{margin:0;}
+
+  .values-section{padding:64px 0;background:var(--paper-2);}
+  .values-section .section-head{max-width:560px;margin-bottom:40px;}
+  .values-section h2{font-size:clamp(26px,3.2vw,34px);}
+  .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  .value-card{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:28px;}
+  .value-card .mark{font-family:var(--serif);font-size:13px;letter-spacing:0.05em;color:var(--clay);text-transform:uppercase;}
+  .value-card h3{font-size:19px;margin:10px 0 10px;}
+  .value-card p{color:var(--ink-soft);font-size:14.5px;margin:0;}
+  @media (max-width:860px){ .values-grid{grid-template-columns:1fr;} }
+
+  .philosophy-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:64px 0;}
+  .philosophy-grid .wrap{display:contents;}
+  .phil-item{border-top:1px solid var(--line);padding-top:16px;}
+  .phil-item h3{font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;font-family:var(--sans);font-weight:600;}
+  .phil-item p{color:var(--ink);font-size:15px;margin:0;}
+
+  .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
+  .contact-band h2{font-size:26px;}
+  .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--clay);color:#fff;padding:13px 26px;
+    border-radius:2px;text-decoration:none;font-size:14.5px;font-weight:500;}
+
+  footer{padding:60px 0 36px;border-top:1px solid var(--line);}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;padding-bottom:32px;border-bottom:1px solid var(--line);}
+  .foot-logo-img{height:24px;width:auto;}
+  .social{display:flex;gap:16px;}
+  .social a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;}
+  .legal{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:24px 0;}
+  .foot-links{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+  .foot-links a{text-decoration:none;}
+  .copyright{font-size:12.5px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="logo" href="/"><img src="/logo-white.png" alt="IKEDA" class="logo-img nav-logo-img"></a>
+    <ul class="navlinks">
+      <li><a href="/#wholesale">Products ▾</a>
+        <div class="dropdown">
+          <div><h4>Home & Living</h4><a href="/#wholesale">Reed Diffusers</a><a href="/#wholesale">Scented Candles</a><a href="/#wholesale">Room Sprays</a><a href="/#wholesale">Gel Fresheners</a></div>
+          <div><h4>Auto & Mobile</h4><a href="/#wholesale">Vent Clips</a><a href="/#wholesale">Car Sprays</a><a href="/#wholesale">Car Diffusers</a><a href="/#wholesale">Fleet & Taxi Packs</a></div>
+          <div><h4>Commercial & Wholesale</h4><a href="/#wholesale">Bulk Air Fresheners</a><a href="/#wholesale">HVAC Scenting</a><a href="/#wholesale">Custom Fragrance</a><a href="/#wholesale">Private Label</a></div>
+        </div>
+      </li>
+      <li><a href="#">Explore the Brand ▾</a>
+        <div class="dropdown" style="grid-template-columns:1fr;min-width:200px;">
+          <div><a href="/about-us.html">About Us</a><a href="/our-story.html">Our Story</a></div>
+        </div>
+      </li>
+      <li><a href="/#wholesale">Offers</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light / dark mode">🌙</button>
+    <a class="cta-btn" href="/#wholesale">Shop Online</a>
+    <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Menu" aria-expanded="false">☰</button>
+  </nav>
+</header>
+
+<section class="story-hero">
+  <div class="wrap">
+    <div class="eyebrow">Product Range</div>
+    <h1>Commercial & Wholesale</h1>
+    <p class="slogan">Bulk fresheners and HVAC scenting, with custom fragrance and private label on request.</p>
+    <p class="founded-line">IKEDA's largest-volume range — built for distributors, facilities, and brand partners, not single-location retail.</p>
+  </div>
+</section>
+
+<section class="prose-section">
+  <div class="wrap">
+    <p class="lede">For distributors, facilities management, and brand partners who need fragrance at real scale — pallet-level supply, building-wide scenting, and the option to put your own name on the product.</p>
+    <div class="pillar">
+      <h3>Bulk Air Fresheners</h3>
+      <p>Case and pallet quantities of IKEDA's core formulas, priced and packed for distributor resale.</p>
+    </div>
+    <div class="pillar">
+      <h3>HVAC Scenting</h3>
+      <p>Building-wide ambient fragrance delivered through existing HVAC systems — consistent scent across an entire space.</p>
+    </div>
+    <div class="pillar">
+      <h3>Custom Fragrance</h3>
+      <p>A scent developed specifically for your brand or space, built on IKEDA's existing formulation process.</p>
+    </div>
+    <div class="pillar">
+      <h3>Private Label</h3>
+      <p>IKEDA-manufactured product, packaged under your own brand — for partners who need their name on the shelf, not ours.</p>
+    </div>
+  </div>
+</section>
+
+<section class="values-section">
+  <div class="wrap">
+    <img class="photo wide" src="https://cdn.pixabay.com/photo/2016/07/29/14/55/storage-warehouse-1553550_1280.jpg" alt="Wholesale warehouse storage, part of the Commercial & Wholesale range" style="border-radius:4px;width:100%;height:auto;display:block;">
+  </div>
+</section>
+
+<section class="contact-band">
+  <div class="wrap">
+    <h2>Want IKEDA on your shelves?</h2>
+    <p>Get pricing, lead times, and samples for your business.</p>
+    <a class="btn" href="/#wholesale">Get a Wholesale Quote →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-logo"><a href="/"><img src="/logo-white.png" alt="IKEDA" class="logo-img foot-logo-img"></a></div>
+      <div class="social">
+        <a href="#">Facebook</a><a href="#">Instagram</a><a href="#">YouTube</a>
+      </div>
+    </div>
+    <div class="legal">
+      IKEDA S.p.A. — Placeholder Registered Address, City, Country<br>
+      Registration No. 00000000 — VAT 00000000000 — contact@ikeda.example
+    </div>
+    <div class="foot-links">
+      <a href="#">Privacy Policy</a><a href="#">Cookie Policy</a><a href="#">Legal Notice</a><a href="#">Ingredient Sheets</a>
+    </div>
+    <div class="copyright">©2026 IKEDA. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  (function trackView() {
+    const API_BASE = window.IKEDA_API_BASE || "";
+    fetch(`${API_BASE}/api/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: location.pathname }),
+    }).catch(() => {});
+  })();
+
+  (function mobileNav() {
+    const toggle = document.getElementById("mobileMenuToggle");
+    const navlinks = document.querySelector(".navlinks");
+    if (!toggle || !navlinks) return;
+    toggle.addEventListener("click", () => {
+      const isOpen = navlinks.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.textContent = isOpen ? "✕" : "☰";
+      if (!isOpen) navlinks.querySelectorAll("li.dropdown-open").forEach((li) => li.classList.remove("dropdown-open"));
+    });
+    navlinks.querySelectorAll(":scope > li").forEach((li) => {
+      const link = li.querySelector(":scope > a");
+      const dropdown = li.querySelector(":scope > .dropdown");
+      if (!link || !dropdown) return;
+      link.addEventListener("click", (e) => {
+        if (window.innerWidth > 860) return;
+        e.preventDefault();
+        const isOpen = li.classList.toggle("dropdown-open");
+        navlinks.querySelectorAll("li").forEach((other) => { if (other !== li) other.classList.remove("dropdown-open"); });
+      });
+    });
+  })();
+
+  (function () {
+    const btn = document.getElementById("themeToggle");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const saved = localStorage.getItem("ikeda-theme");
+    let current = saved || (systemPrefersDark ? "dark" : "light");
+    function apply(theme) {
+      document.documentElement.dataset.theme = theme;
+      btn.textContent = theme === "dark" ? "☀️" : "🌙";
+      current = theme;
+    }
+    apply(current);
+    btn.addEventListener("click", () => {
+      const next = current === "dark" ? "light" : "dark";
+      apply(next);
+      localStorage.setItem("ikeda-theme", next);
+    });
+  })();
+</script>
+</body>
+</html>
