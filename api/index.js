@@ -51,7 +51,7 @@ const CONTENT_DEFAULTS = {
   "hero.heading": "Fragrance that holds up, at any volume.",
   "hero.subheading": "IKEDA manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.",
   "hero.cta_text": "Request Wholesale Pricing →",
-  "hero.video_url": "https://cdn.pixabay.com/video/2025/02/12/257927_large.mp4",
+  "hero.video_url": "/ikeda-hero.mp4",
   "lines.heading": "Three ranges, one supply chain",
   "lines.subheading": "Every range ships the same way: consistent fragrance, reliable case counts, and lead times built for repeat wholesale orders.",
   "card1.title": "Home & Living",
