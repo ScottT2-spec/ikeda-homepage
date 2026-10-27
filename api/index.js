@@ -65,7 +65,7 @@ const CONTENT_DEFAULTS = {
   "card3.image_url": "/ikeda-product-lineup.jpg",
   "statement.quote": "\"A fragrance that's right once is a formula. A fragrance that's right on every pallet, every time, is a business.\"",
   "statement.attribution": "IKEDA, on manufacturing",
-  "statement.video_url": "https://cdn.pixabay.com/video/2023/12/04/192012-891324245_large.mp4",
+  "statement.video_url": "https://cdn.pixabay.com/video/2025/02/12/257927_large.mp4",
   "about.heading": "About Us",
   "about.body": "IKEDA is a wholesale air freshener manufacturer, supplying retailers, distributors, and fleets with consistent fragrance at case and pallet volume — plus custom and private-label runs for partners who need their own brand on the shelf.",
   "about.image_url": "/ikeda-home-cleaning.jpg",

@@ -243,7 +243,7 @@
 
 <section class="statement">
   <video autoplay muted loop playsinline data-ck-video="statement.video_url">
-    <source src="https://cdn.pixabay.com/video/2023/12/04/192012-891324245_large.mp4" type="video/mp4">
+    <source src="https://cdn.pixabay.com/video/2025/02/12/257927_large.mp4" type="video/mp4">
   </video>
   <div class="wrap">
     <h2 data-ck="statement.quote">"A fragrance that's right once is a formula. A fragrance that's right on every pallet, every time, is a business."</h2>
@@ -357,7 +357,7 @@
     }).catch(() => {});
   })();
 
-  // These 6 keys are the brand photography/video — git-committed files,
+  // These keys are the brand photography/video — git-committed files,
   // deliberately NOT admin-editable. They used to be DB-overridable like
   // everything else, which meant an already-seeded database could serve
   // stale media forever: updating CONTENT_DEFAULTS in code only seeds an
@@ -376,6 +376,7 @@
     "card3.image_url",
     "about.image_url",
     "story.image_url",
+    "statement.video_url",
   ]);
 
   // Belt-and-suspenders autoplay recovery. Attribute-based autoplay
