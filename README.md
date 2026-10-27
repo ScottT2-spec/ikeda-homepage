@@ -26,7 +26,9 @@ Vercel doesn't run a persistent server and its filesystem isn't writable/persist
 That's it — homepage, forms, and admin all work from the same Vercel domain after this.
 
 ## Admin panel — editing the homepage
-Every heading, body of copy, image URL, the two background video URLs, and the seven brand colors are editable from `/admin.html`, saved straight to the database, and reflected on the homepage immediately — no redeploy needed, since `index.html` fetches `/api/content` on every load.
+Every heading, body of copy, the statement-band video, and the seven brand colors are editable from `/admin.html`, saved straight to the database, and reflected on the homepage immediately — no redeploy needed, since `index.html` fetches `/api/content` on every load.
+
+**The brand photography and hero video are NOT admin-editable, on purpose.** Those 6 fields (hero video, the 3 product-range card images, About and Story images) are locked to the files committed in git — `loadContent()` in `index.html` explicitly skips them (see `LOCKED_MEDIA_KEYS`). This was a deliberate fix: a database seeded once keeps serving its original values forever (`CONTENT_DEFAULTS` only seeds an *empty* table — `ON CONFLICT DO NOTHING` — so updating a default in code never reaches an already-seeded database). That meant swapping an image by replacing the file and updating `CONTENT_DEFAULTS` looked right in code, but the live page would show the new file for an instant, then an already-stale database value would overwrite it back to the old one. To change these 6 images/video now: replace the actual file in the repo (keeping the same filename, or updating the `src`/`source` in `index.html` if the filename changes) and push — no database involved.
 
 **Change the password after first login** — there's no "forgot password" flow yet, and editing `ADMIN_PASSWORD` in Vercel's env vars afterward does nothing (it's only read once, when the `admins` table is empty). Use the panel's password-change instead.
 

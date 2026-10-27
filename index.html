@@ -357,6 +357,27 @@
     }).catch(() => {});
   })();
 
+  // These 6 keys are the brand photography/video — git-committed files,
+  // deliberately NOT admin-editable. They used to be DB-overridable like
+  // everything else, which meant an already-seeded database could serve
+  // stale media forever: updating CONTENT_DEFAULTS in code only seeds an
+  // EMPTY table (ON CONFLICT DO NOTHING), so a code push that swaps these
+  // files never reaches a database that was seeded before the swap — the
+  // page would flash the new (correct) file, then this script would
+  // immediately overwrite it with whatever old URL was still in the DB.
+  // Locking these to the static HTML's src/source removes that whole
+  // class of bug: what's committed to git is always what ships, no DB
+  // state to fall out of sync. The corresponding admin.html fields were
+  // removed to match — editing them would otherwise silently do nothing.
+  const LOCKED_MEDIA_KEYS = new Set([
+    "hero.video_url",
+    "card1.image_url",
+    "card2.image_url",
+    "card3.image_url",
+    "about.image_url",
+    "story.image_url",
+  ]);
+
   (async function loadContent() {
     const API_BASE = window.IKEDA_API_BASE || "";
     try {
@@ -375,10 +396,12 @@
       });
       document.querySelectorAll("[data-ck-src]").forEach((el) => {
         const key = el.dataset.ckSrc;
+        if (LOCKED_MEDIA_KEYS.has(key)) return;
         if (content[key] != null) el.src = content[key];
       });
       document.querySelectorAll("[data-ck-video]").forEach((el) => {
         const key = el.dataset.ckVideo;
+        if (LOCKED_MEDIA_KEYS.has(key)) return;
         if (content[key] != null) {
           el.querySelector("source").src = content[key];
           el.load();
