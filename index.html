@@ -206,7 +206,7 @@
       <p data-ck="hero.subheading">IKEDA manufactures and supplies air fresheners for home, auto, and commercial spaces — in the case quantities wholesalers and retailers actually need.</p>
       <a class="btn" href="#wholesale" data-ck="hero.cta_text">Request Wholesale Pricing →</a>
     </div>
-    <video class="photo wide" autoplay muted loop playsinline data-ck-video="hero.video_url">
+    <video class="photo wide" autoplay muted loop playsinline preload="auto" data-ck-video="hero.video_url" id="hero-video">
       <source src="/ikeda-hero.mp4" type="video/mp4">
     </video>
   </div>
@@ -377,6 +377,32 @@
     "about.image_url",
     "story.image_url",
   ]);
+
+  // Belt-and-suspenders autoplay recovery. Attribute-based autoplay
+  // (autoplay muted playsinline) is correct and works in most cases, but
+  // some mobile browsers still block it — commonly iOS Low Power Mode or
+  // cellular data-saving heuristics — and fall back to a tap-to-play
+  // overlay. This doesn't override those restrictions (nothing
+  // legitimately can; they're deliberate device/network policies), but
+  // it does recover automatically the instant the visitor does ANYTHING
+  // on the page — scroll, tap, type — since that's a genuine user
+  // gesture every browser's autoplay policy accepts. Means most visitors
+  // never actually see the tap-to-play button in practice, even when
+  // pure attribute-autoplay gets blocked.
+  (function heroAutoplayFallback() {
+    const video = document.getElementById("hero-video");
+    if (!video) return;
+
+    const tryPlay = () => {
+      if (video.paused) video.play().catch(() => {});
+    };
+
+    tryPlay(); // in case the element wasn't ready at parse time
+
+    ["touchstart", "click", "scroll", "keydown"].forEach((evt) => {
+      document.addEventListener(evt, tryPlay, { once: true, passive: true });
+    });
+  })();
 
   (async function loadContent() {
     const API_BASE = window.IKEDA_API_BASE || "";
