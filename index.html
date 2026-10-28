@@ -18,9 +18,9 @@
     --serif:'Fraunces',Georgia,serif; --sans:'Work Sans',system-ui,sans-serif;
   }
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){ --paper:#382451; --paper-2:#2A1D3A; --ink:#F5F2F0; --ink-soft:#BCB4C0; --line:#625174; }
+    :root:not([data-theme="light"]){ --paper:#382451; --paper-2:#2A1D3A; --ink:#F5F2F0; --ink-soft:#BCB4C0; --line:#625174; --clay:#C9B8E8; }
   }
-  :root[data-theme="dark"]{ --paper:#382451; --paper-2:#2A1D3A; --ink:#F5F2F0; --ink-soft:#BCB4C0; --line:#625174; }
+  :root[data-theme="dark"]{ --paper:#382451; --paper-2:#2A1D3A; --ink:#F5F2F0; --ink-soft:#BCB4C0; --line:#625174; --clay:#C9B8E8; }
   *{box-sizing:border-box;}
   html{scroll-padding-top:env(safe-area-inset-top,0px);}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;
@@ -36,12 +36,17 @@
   .logo{display:inline-flex;align-items:center;text-decoration:none;}
   .logo-img{height:28px;width:auto;display:block;}
   /* The source file is a white mark on transparent. Light mode needs a
-     dark mark against the light nav bar, so invert it there; dark mode
-     keeps it white as-is. The footer is always dark regardless of theme
-     (see .footer-band/.newsletter-band), so its logo never inverts. */
-  .nav-logo-img{filter:invert(1);}
-  :root[data-theme="dark"] .nav-logo-img{filter:none;}
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .nav-logo-img{filter:none;} }
+     dark mark (light-mode background is near-white, same as the mark —
+     1.11:1 contrast, effectively invisible), so invert it there; dark
+     mode keeps it white as-is. Same applies to the footer logo: footer
+     has no background of its own, it inherits body's var(--paper), so
+     it's exactly as theme-dependent as the nav bar — the "footer is
+     always dark" assumption this comment used to make was wrong. */
+  .nav-logo-img, .foot-logo-img{filter:invert(1);}
+  :root[data-theme="dark"] .nav-logo-img, :root[data-theme="dark"] .foot-logo-img{filter:none;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .nav-logo-img, :root:not([data-theme="light"]) .foot-logo-img{filter:none;}
+  }
   .navlinks{display:flex;align-items:center;gap:34px;list-style:none;margin:0;padding:0;}
   .navlinks > li{position:relative;}
   .navlinks a{text-decoration:none;font-size:14.5px;color:var(--ink-soft);}
