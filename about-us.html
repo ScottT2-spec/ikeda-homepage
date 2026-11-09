@@ -102,6 +102,16 @@
   .phil-item h3{font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;font-family:var(--sans);font-weight:600;}
   .phil-item p{color:var(--ink);font-size:15px;margin:0;}
 
+  .gallery-section{padding:64px 0;background:var(--paper-2);}
+  .gallery-section h2{font-size:clamp(24px,3vw,32px);margin-bottom:28px;}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:start;}
+  .gallery figure{margin:0;}
+  .gallery img,.banner-fig img{width:100%;height:auto;display:block;border-radius:4px;background:#fff;}
+  .gallery figcaption,.banner-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+  .gallery figcaption b,.banner-fig figcaption b{color:var(--ink);font-weight:600;}
+  .banner-fig{margin:0;padding:48px 0 0;}
+  .banner-fig img{max-height:520px;object-fit:cover;}
+  @media (max-width:700px){ .gallery{grid-template-columns:1fr;} }
   .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
   .contact-band h2{font-size:26px;}
   .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
@@ -155,6 +165,8 @@
     <p class="founded-line"><b>Founded in 2002</b> — IKEDA supplies retailers, distributors, and fleets with reliable fragrance across home, auto, and commercial categories.</p>
   </div>
 </section>
+
+<div class="wrap"><figure class="banner-fig"><img src="/product-diffuser-refill.jpg" alt="IKEDA reed diffuser refill range"><figcaption><b>Reed Diffuser Refill · 500ml</b> — Six scents, one consistent label system</figcaption></figure></div>
 
 <section class="prose-section">
   <div class="wrap">

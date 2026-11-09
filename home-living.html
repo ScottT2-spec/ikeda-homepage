@@ -102,6 +102,16 @@
   .phil-item h3{font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;font-family:var(--sans);font-weight:600;}
   .phil-item p{color:var(--ink);font-size:15px;margin:0;}
 
+  .gallery-section{padding:64px 0;background:var(--paper-2);}
+  .gallery-section h2{font-size:clamp(24px,3vw,32px);margin-bottom:28px;}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:start;}
+  .gallery figure{margin:0;}
+  .gallery img,.banner-fig img{width:100%;height:auto;display:block;border-radius:4px;background:#fff;}
+  .gallery figcaption,.banner-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+  .gallery figcaption b,.banner-fig figcaption b{color:var(--ink);font-weight:600;}
+  .banner-fig{margin:0;padding:48px 0 0;}
+  .banner-fig img{max-height:520px;object-fit:cover;}
+  @media (max-width:700px){ .gallery{grid-template-columns:1fr;} }
   .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
   .contact-band h2{font-size:26px;}
   .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
@@ -178,9 +188,15 @@
   </div>
 </section>
 
-<section class="values-section">
+<section class="gallery-section">
   <div class="wrap">
-    <img class="photo wide" src="/ikeda-home-fragrance.jpg" alt="IKEDA Home Fragrance packaging" style="border-radius:4px;width:100%;height:auto;display:block;">
+    <h2>The range</h2>
+    <div class="gallery">
+      <figure><img src="/product-candles.jpg" alt="IKEDA scented candles in six scents" loading="lazy"><figcaption><b>Scented Candles · 120g</b> — Peach, Lemon & Sandalwood, English Pear & Freesia, Fresh Berries, Vanilla, Shangri-La</figcaption></figure>
+      <figure><img src="/product-diffuser-refill.jpg" alt="IKEDA reed diffuser refill bottles" loading="lazy"><figcaption><b>Reed Diffuser Refill · 500ml</b> — Pineapple, Lemongrass, Shangrila, Vanilla, Lavender, Honeydew</figcaption></figure>
+      <figure><img src="/product-liquid-can-120ml.jpg" alt="IKEDA liquid air freshener cans 120ml" loading="lazy"><figcaption><b>Liquid Air Freshener · 120ml</b> — Peach, Strawberry, Lavender, Honeydew Melon, Cherry, Pineapple</figcaption></figure>
+      <figure><img src="/product-ceramic.jpg" alt="IKEDA ceramic air fresheners" loading="lazy"><figcaption><b>Ceramic Air Freshener</b> — Bubble Gum, Strawberry, W Berry, Vanilla, CK Citrus, Sakura, Cherry, Peach, Marine Squash</figcaption></figure>
+    </div>
   </div>
 </section>
 

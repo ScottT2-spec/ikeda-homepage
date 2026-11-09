@@ -102,6 +102,16 @@
   .phil-item h3{font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;font-family:var(--sans);font-weight:600;}
   .phil-item p{color:var(--ink);font-size:15px;margin:0;}
 
+  .gallery-section{padding:64px 0;background:var(--paper-2);}
+  .gallery-section h2{font-size:clamp(24px,3vw,32px);margin-bottom:28px;}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;align-items:start;}
+  .gallery figure{margin:0;}
+  .gallery img,.banner-fig img{width:100%;height:auto;display:block;border-radius:4px;background:#fff;}
+  .gallery figcaption,.banner-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+  .gallery figcaption b,.banner-fig figcaption b{color:var(--ink);font-weight:600;}
+  .banner-fig{margin:0;padding:48px 0 0;}
+  .banner-fig img{max-height:520px;object-fit:cover;}
+  @media (max-width:700px){ .gallery{grid-template-columns:1fr;} }
   .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
   .contact-band h2{font-size:26px;}
   .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
@@ -178,9 +188,14 @@
   </div>
 </section>
 
-<section class="values-section">
+<section class="gallery-section">
   <div class="wrap">
-    <img class="photo wide" src="/ikeda-product-lineup.jpg" alt="IKEDA full product range lineup" style="border-radius:4px;width:100%;height:auto;display:block;">
+    <h2>Also in the range</h2>
+    <div class="gallery">
+      <figure><img src="/product-liquid-can-60ml.jpg" alt="IKEDA mini liquid air freshener cans 60ml" loading="lazy"><figcaption><b>Liquid Air Freshener Mini · 60ml</b> — Peach, Lavender, Strawberry, Honeydew Melon, Cherry, Pineapple</figcaption></figure>
+      <figure><img src="/product-laundry-detergent.jpg" alt="IKEDA laundry detergent" loading="lazy"><figcaption><b>Laundry Detergent · 2L, 50 loads</b> — Sakura, Rose Grape</figcaption></figure>
+      <figure><img src="/product-laundry-beads.jpg" alt="IKEDA laundry scent beads" loading="lazy"><figcaption><b>Laundry Scent Beads</b> — Blue Bell, Sakura</figcaption></figure>
+    </div>
   </div>
 </section>
 
