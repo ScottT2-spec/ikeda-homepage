@@ -114,6 +114,12 @@
   .banner-fig{margin:0;padding:48px 0 0;}
   .banner-fig img{max-height:520px;object-fit:cover;}
   @media (max-width:700px){ .gallery{grid-template-columns:1fr;} }
+  .product-fig{margin:-6px 0 36px;}
+  .product-fig img{width:100%;height:auto;display:block;border-radius:4px;background:#fff;}
+  .product-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+  .product-fig figcaption b{color:var(--ink);font-weight:600;}
+  .product-fig + .product-fig{margin-top:-14px;}
+  .pillar[id]{scroll-margin-top:100px;}
   .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
   .contact-band h2{font-size:26px;}
   .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
@@ -137,11 +143,20 @@
   <nav class="wrap">
     <a class="logo" href="/"><img src="/logo-white.png" alt="IKEDA" class="logo-img nav-logo-img"></a>
     <ul class="navlinks">
-      <li><a href="/#wholesale">Products ▾</a>
+      <li><a href="#">Products ▾</a>
         <div class="dropdown">
-          <div><h4>Home & Living</h4><a href="/#wholesale">Reed Diffusers</a><a href="/#wholesale">Scented Candles</a><a href="/#wholesale">Room Sprays</a><a href="/#wholesale">Gel Fresheners</a></div>
-          <div><h4>Automobile</h4><a href="/#wholesale">Vent Clips</a><a href="/#wholesale">Car Sprays</a><a href="/#wholesale">Car Diffusers</a><a href="/#wholesale">Fleet & Taxi Packs</a></div>
-          <div><h4>Commercial & Wholesale</h4><a href="/#wholesale">Bulk Air Fresheners</a><a href="/#wholesale">HVAC Scenting</a><a href="/#wholesale">Custom Fragrance</a><a href="/#wholesale">Private Label</a></div>
+          <div>
+            <h4>Home & Living</h4>
+            <a href="/home-living.html">Reed Diffusers</a><a href="/home-living.html">Scented Candles</a><a href="/home-living.html">Room Sprays</a><a href="/home-living.html">Gel Fresheners</a>
+          </div>
+          <div>
+            <h4>Automobile</h4>
+            <a href="/auto-mobile.html">Vent Clips</a><a href="/auto-mobile.html">Car Sprays</a><a href="/auto-mobile.html">Car Diffusers</a>
+          </div>
+          <div>
+            <h4>Body Perfumes</h4>
+            <a href="/body-perfumes.html#seven-days-of-mood">Seven Days of Mood</a><a href="/body-perfumes.html#city-moods">City Moods</a>
+          </div>
         </div>
       </li>
       <li><a href="#">Explore the Brand ▾</a>
@@ -149,7 +164,14 @@
           <div><a href="/about-us.html">About Us</a><a href="/our-story.html">Our Story</a></div>
         </div>
       </li>
-      <li><a href="/#wholesale">Wholesale</a></li>
+      <li><a href="/#wholesale">Wholesale ▾</a>
+        <div class="dropdown" style="grid-template-columns:1fr;min-width:230px;">
+          <div>
+            <h4>Commercial & Wholesale</h4>
+            <a href="/#wholesale">Request a Quote</a><a href="/commercial-wholesale.html">Bulk Air Fresheners</a><a href="/commercial-wholesale.html">Custom Fragrance</a><a href="/commercial-wholesale.html">Private Label</a>
+          </div>
+        </div>
+      </li>
       <li><a href="/#contact">Contact Us</a></li>
       <li><a href="/#new-arrivals">New Arrivals</a></li>
     </ul>
@@ -183,20 +205,12 @@
       <h3>Car Diffusers</h3>
       <p>A step up from clips — refillable or cartridge-based diffusion for longer-lasting in-cab fragrance.</p>
     </div>
+    <figure class="product-fig"><img src="/product-smart-car-refill.jpg" alt="IKEDA smart car diffuser refill boxes and bottle" loading="lazy"><figcaption><b>Smart Car Diffuser Refill · 100ml</b> — Honeydew Melon, Oud, English Pear & Freesia, Shangri-La</figcaption></figure>
     <div class="pillar">
-      <h3>Fleet & Taxi Packs</h3>
-      <p>Bulk-cased fragrance built for rental fleets and taxi operators who need one consistent scent across every vehicle.</p>
+      <h3>Auto & Home Air Freshener</h3>
+      <p>A bottle air freshener for the car and the home.</p>
     </div>
-  </div>
-</section>
-
-<section class="gallery-section">
-  <div class="wrap">
-    <h2>The range</h2>
-    <div class="gallery">
-      <figure><img src="/product-auto-home-freshener.jpg" alt="IKEDA auto and home air freshener bottles" loading="lazy"><figcaption><b>Auto & Home Air Freshener</b></figcaption></figure>
-      <figure><img src="/product-smart-car-refill.jpg" alt="IKEDA smart car diffuser refill boxes and bottle" loading="lazy"><figcaption><b>Smart Car Diffuser Refill · 100ml</b> — Honeydew Melon, Oud, English Pear & Freesia, Shangri-La</figcaption></figure>
-    </div>
+    <figure class="product-fig"><img src="/product-auto-home-freshener.jpg" alt="IKEDA auto and home air freshener bottles" loading="lazy"><figcaption><b>Auto & Home Air Freshener</b></figcaption></figure>
   </div>
 </section>
 

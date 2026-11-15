@@ -114,6 +114,12 @@
   .banner-fig{margin:0;padding:48px 0 0;}
   .banner-fig img{max-height:520px;object-fit:cover;}
   @media (max-width:700px){ .gallery{grid-template-columns:1fr;} }
+  .product-fig{margin:-6px 0 36px;}
+  .product-fig img{width:100%;height:auto;display:block;border-radius:4px;background:#fff;}
+  .product-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+  .product-fig figcaption b{color:var(--ink);font-weight:600;}
+  .product-fig + .product-fig{margin-top:-14px;}
+  .pillar[id]{scroll-margin-top:100px;}
   .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
   .contact-band h2{font-size:26px;}
   .contact-band p{color:var(--ink-soft);margin:12px 0 26px;}
@@ -137,11 +143,20 @@
   <nav class="wrap">
     <a class="logo" href="/"><img src="/logo-white.png" alt="IKEDA" class="logo-img nav-logo-img"></a>
     <ul class="navlinks">
-      <li><a href="/#wholesale">Products ▾</a>
+      <li><a href="#">Products ▾</a>
         <div class="dropdown">
-          <div><h4>Home & Living</h4><a href="/#wholesale">Reed Diffusers</a><a href="/#wholesale">Scented Candles</a><a href="/#wholesale">Room Sprays</a><a href="/#wholesale">Gel Fresheners</a></div>
-          <div><h4>Automobile</h4><a href="/#wholesale">Vent Clips</a><a href="/#wholesale">Car Sprays</a><a href="/#wholesale">Car Diffusers</a><a href="/#wholesale">Fleet & Taxi Packs</a></div>
-          <div><h4>Commercial & Wholesale</h4><a href="/#wholesale">Bulk Air Fresheners</a><a href="/#wholesale">HVAC Scenting</a><a href="/#wholesale">Custom Fragrance</a><a href="/#wholesale">Private Label</a></div>
+          <div>
+            <h4>Home & Living</h4>
+            <a href="/home-living.html">Reed Diffusers</a><a href="/home-living.html">Scented Candles</a><a href="/home-living.html">Room Sprays</a><a href="/home-living.html">Gel Fresheners</a>
+          </div>
+          <div>
+            <h4>Automobile</h4>
+            <a href="/auto-mobile.html">Vent Clips</a><a href="/auto-mobile.html">Car Sprays</a><a href="/auto-mobile.html">Car Diffusers</a>
+          </div>
+          <div>
+            <h4>Body Perfumes</h4>
+            <a href="/body-perfumes.html#seven-days-of-mood">Seven Days of Mood</a><a href="/body-perfumes.html#city-moods">City Moods</a>
+          </div>
         </div>
       </li>
       <li><a href="#">Explore the Brand ▾</a>
@@ -149,7 +164,14 @@
           <div><a href="/about-us.html">About Us</a><a href="/our-story.html">Our Story</a></div>
         </div>
       </li>
-      <li><a href="/#wholesale">Wholesale</a></li>
+      <li><a href="/#wholesale">Wholesale ▾</a>
+        <div class="dropdown" style="grid-template-columns:1fr;min-width:230px;">
+          <div>
+            <h4>Commercial & Wholesale</h4>
+            <a href="/#wholesale">Request a Quote</a><a href="/commercial-wholesale.html">Bulk Air Fresheners</a><a href="/commercial-wholesale.html">Custom Fragrance</a><a href="/commercial-wholesale.html">Private Label</a>
+          </div>
+        </div>
+      </li>
       <li><a href="/#contact">Contact Us</a></li>
       <li><a href="/#new-arrivals">New Arrivals</a></li>
     </ul>
@@ -163,21 +185,17 @@
   <div class="wrap">
     <div class="eyebrow">Product Range</div>
     <h1>Commercial & Wholesale</h1>
-    <p class="slogan">Bulk fresheners and HVAC scenting, with custom fragrance and private label on request.</p>
+    <p class="slogan">Bulk fresheners, with custom fragrance and private label on request.</p>
     <p class="founded-line">IKEDA's largest-volume range — built for distributors, facilities, and brand partners, not single-location retail.</p>
   </div>
 </section>
 
 <section class="prose-section">
   <div class="wrap">
-    <p class="lede">For distributors, facilities management, and brand partners who need fragrance at real scale — pallet-level supply, building-wide scenting, and the option to put your own name on the product.</p>
+    <p class="lede">For distributors, facilities management, and brand partners who need fragrance at real scale — pallet-level supply, and the option to put your own name on the product.</p>
     <div class="pillar">
       <h3>Bulk Air Fresheners</h3>
       <p>Case and pallet quantities of IKEDA's core formulas, priced and packed for distributor resale.</p>
-    </div>
-    <div class="pillar">
-      <h3>HVAC Scenting</h3>
-      <p>Building-wide ambient fragrance delivered through existing HVAC systems — consistent scent across an entire space.</p>
     </div>
     <div class="pillar">
       <h3>Custom Fragrance</h3>
@@ -187,17 +205,16 @@
       <h3>Private Label</h3>
       <p>IKEDA-manufactured product, packaged under your own brand — for partners who need their name on the shelf, not ours.</p>
     </div>
-  </div>
-</section>
-
-<section class="gallery-section">
-  <div class="wrap">
-    <h2>Also in the range</h2>
-    <div class="gallery">
-      <figure><img src="/product-liquid-can-60ml.jpg" alt="IKEDA mini liquid air freshener cans 60ml" loading="lazy"><figcaption><b>Liquid Air Freshener Mini · 60ml</b> — Peach, Lavender, Strawberry, Honeydew Melon, Cherry, Pineapple</figcaption></figure>
-      <figure><img src="/product-laundry-detergent.jpg" alt="IKEDA laundry detergent" loading="lazy"><figcaption><b>Laundry Detergent · 2L, 50 loads</b> — Sakura, Rose Grape</figcaption></figure>
-      <figure><img src="/product-laundry-beads.jpg" alt="IKEDA laundry scent beads" loading="lazy"><figcaption><b>Laundry Scent Beads</b> — Blue Bell, Sakura</figcaption></figure>
+    <div class="pillar">
+      <h3>Laundry Detergent</h3>
+      <p>Ultra-concentrated laundry detergent in 2L bottles (50 loads), with stain-fighting enzymes and long-lasting fragrance.</p>
     </div>
+    <figure class="product-fig"><img src="/product-laundry-detergent.jpg" alt="IKEDA laundry detergent" loading="lazy"><figcaption><b>Laundry Detergent · 2L</b> — Sakura, Rose Grape</figcaption></figure>
+    <div class="pillar">
+      <h3>Laundry Scent Beads</h3>
+      <p>Scent beads that add fragrance to the wash, in clear bottles.</p>
+    </div>
+    <figure class="product-fig"><img src="/product-laundry-beads.jpg" alt="IKEDA laundry scent beads" loading="lazy"><figcaption><b>Laundry Scent Beads</b> — Blue Bell, Sakura</figcaption></figure>
   </div>
 </section>
 

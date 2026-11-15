@@ -88,7 +88,7 @@ const CONTENT_DEFAULTS = {
   "card2.body": "Vent clips and car sprays built for rental fleets, taxis, and forecourt retail alike.",
   "card2.image_url": "/ikeda-car-scent.jpg",
   "card3.title": "Commercial & Wholesale",
-  "card3.body": "Bulk fresheners and HVAC scenting, with custom fragrance and private label on request.",
+  "card3.body": "Bulk fresheners, with custom fragrance and private label on request.",
   "card3.image_url": "/ikeda-product-lineup.jpg",
   "statement.quote": "\"A fragrance that's right once is a formula. A fragrance that's right on every pallet, every time, is a business.\"",
   "statement.attribution": "IKEDA, on manufacturing",
