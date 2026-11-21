@@ -159,6 +159,9 @@
   .form-status[data-state="error"]{color:var(--clay);}
   .form button[disabled]{opacity:0.6;cursor:default;}
 
+  .coming-soon{text-align:center;}
+  .coming-soon .section-head{margin:0 auto 28px;}
+  #new-arrivals,#newsletter{scroll-margin-top:90px;}
   .newsletter-band{background:#382451;color:#F5F2F0;padding:72px 0;text-align:center;}
   .newsletter-band h2{color:#F5F2F0;font-size:26px;}
   .newsletter-band p{color:#C7D0C4;margin:12px 0 26px;}
@@ -225,7 +228,7 @@
   </div>
 </section>
 
-<section class="section" id="new-arrivals">
+<section class="section" id="ranges">
   <div class="wrap">
     <div class="section-head">
       <h2 data-ck="lines.heading">Three ranges, one supply chain</h2>
@@ -320,7 +323,17 @@
   </div>
 </section>
 
-<section class="newsletter-band">
+<section class="section coming-soon" id="new-arrivals">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>New Arrivals</h2>
+      <p>New products are coming in soon. To stay connected and be the first to know, sign up for updates.</p>
+    </div>
+    <a class="btn" href="#newsletter">Sign up for updates →</a>
+  </div>
+</section>
+
+<section class="newsletter-band" id="newsletter">
   <div class="wrap">
     <h2 data-ck="newsletter.heading">Stay in the loop</h2>
     <p data-ck="newsletter.subheading">New ranges, restocks, and wholesale offers — straight to your inbox, nothing else.</p>
