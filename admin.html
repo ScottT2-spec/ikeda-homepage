@@ -107,13 +107,17 @@
   .stat-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;}
   .stat-num{font-size:30px;font-weight:700;line-height:1.1;}
   .stat-label{font-size:12.5px;color:#8C809A;margin-top:4px;}
-  .chart-card svg{width:100%;height:160px;display:block;}
-  .chart-bar{fill:var(--clay);}
-  .chart-bar.alt{fill:var(--moss);}
-  .chart-axis{font-size:9px;fill:#8C809A;}
-  .legend{display:flex;gap:16px;font-size:12.5px;color:#5B4E6E;margin-top:10px;}
-  .legend span{display:inline-flex;align-items:center;gap:6px;}
-  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  /* area chart (same look as the qualification portal's analytics: dashed grid, light fill, dark tooltip) */
+  .area-chart-wrap{position:relative;height:230px;margin-top:6px;}
+  .area-chart-wrap svg{width:100%;height:100%;display:block;overflow:visible;}
+  .area-grid line{stroke:var(--line);stroke-dasharray:3 3;}
+  .area-axis text{font-size:11px;fill:#8C809A;}
+  .area-dot{stroke:#fff;stroke-width:2;transition:r .12s ease;}
+  .area-hit{fill:transparent;cursor:pointer;}
+  .area-tooltip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-125%);background:var(--ink);color:#fff;
+    border-radius:12px;padding:8px 12px;font-size:13px;white-space:nowrap;transition:opacity .12s ease;z-index:2;}
+  .area-tooltip.show{opacity:1;}
+  .area-tooltip .lbl{display:block;color:#C9B8E8;font-weight:600;margin-bottom:2px;}
 
   /* ---- dashboard overview ---- */
   .welcome{margin-bottom:22px;}
@@ -213,12 +217,11 @@
           </div>
           <div class="card chart-card">
             <h2>Page Views — last 14 days</h2>
-            <svg id="viewsChart" viewBox="0 0 560 160" preserveAspectRatio="none"></svg>
+            <div class="area-chart-wrap" id="viewsChart"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
           </div>
           <div class="card chart-card">
             <h2>Submissions — last 14 days</h2>
-            <svg id="subsChart" viewBox="0 0 560 160" preserveAspectRatio="none"></svg>
-            <div class="legend"><span><i style="background:var(--clay)"></i>Submissions</span></div>
+            <div class="area-chart-wrap" id="subsChart"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
           </div>
         </div>
 
@@ -437,32 +440,75 @@ async function deleteSubmission(id) {
   renderSubmissions();
 }
 
-function drawBarChart(svgId, dayCounts, color) {
-  const svg = document.getElementById(svgId);
+const areaCharts = {};
+
+function drawAreaChart(id, dayCounts, color) {
+  areaCharts[id] = { dayCounts, color };
+  const wrap = document.getElementById(id);
+  if (!wrap) return;
+  const svg = wrap.querySelector("svg");
+  const tip = wrap.querySelector(".area-tooltip");
+
   const days = [];
   const today = new Date();
   for (let i = 13; i >= 0; i--) {
     const d = new Date(today); d.setDate(d.getDate() - i);
     days.push(d.toISOString().slice(0, 10));
   }
-  const map = Object.fromEntries(dayCounts.map((r) => [r.day, r.c]));
+  const map = Object.fromEntries((dayCounts || []).map((r) => [r.day, r.c]));
   const values = days.map((d) => map[d] || 0);
-  const max = Math.max(1, ...values);
-  const w = 560, h = 160, padBottom = 18, barGap = 4;
-  const barW = (w / values.length) - barGap;
-  let svgContent = "";
-  values.forEach((v, i) => {
-    const barH = (v / max) * (h - padBottom - 8);
-    const x = i * (barW + barGap);
-    const y = h - padBottom - barH;
-    svgContent += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" class="chart-bar" fill="${color}" rx="2"></rect>`;
-    if (i % 2 === 0) {
-      const label = days[i].slice(5).replace("-", "/");
-      svgContent += `<text x="${x + barW / 2}" y="${h - 4}" text-anchor="middle" class="chart-axis">${label}</text>`;
-    }
+
+  const W = wrap.clientWidth || 560, H = wrap.clientHeight || 230;
+  const padL = 30, padR = 14, padT = 14, padB = 28;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const max = Math.max(...values, 1);
+  const step = max <= 4 ? 1 : Math.ceil(max / 4);       // whole-number ticks only
+  const top = Math.ceil(max / step) * step;
+  const x = (i) => padL + (values.length > 1 ? (i * innerW) / (values.length - 1) : 0);
+  const y = (v) => padT + innerH - (v / top) * innerH;
+  const pts = values.map((v, i) => ({ x: x(i), y: y(v), v, day: days[i] }));
+
+  let line = `M${pts[0].x},${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const mx = (pts[i - 1].x + pts[i].x) / 2;
+    line += ` C${mx},${pts[i - 1].y} ${mx},${pts[i].y} ${pts[i].x},${pts[i].y}`;
+  }
+  const base = padT + innerH;
+  const area = `${line} L${pts[pts.length - 1].x},${base} L${pts[0].x},${base} Z`;
+
+  let grid = "", yLabels = "";
+  for (let v = 0; v <= top; v += step) {
+    grid += `<line x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/>`;
+    yLabels += `<text x="${padL - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  const every = W < 420 ? 3 : W < 640 ? 2 : 1;
+  const xLabels = pts.map((p, i) => i % every === 0
+    ? `<text x="${p.x}" y="${H - 8}" text-anchor="middle">${p.day.slice(5).replace("-", "/")}</text>` : "").join("");
+  const dots = pts.map((p, i) => `<circle class="area-dot" data-i="${i}" cx="${p.x}" cy="${p.y}" r="3" fill="${color}"></circle><circle class="area-hit" data-i="${i}" cx="${p.x}" cy="${p.y}" r="14"></circle>`).join("");
+
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = `<g class="area-grid">${grid}</g><g class="area-axis">${yLabels}${xLabels}</g>
+    <path d="${area}" fill="${color}" fill-opacity="0.1" stroke="none"></path>
+    <path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"></path>${dots}`;
+
+  svg.querySelectorAll(".area-hit").forEach((hit) => {
+    const p = pts[+hit.dataset.i];
+    const dot = svg.querySelector(`.area-dot[data-i="${hit.dataset.i}"]`);
+    hit.addEventListener("mouseenter", () => {
+      dot.setAttribute("r", "5"); dot.setAttribute("fill", "#C9B8E8"); dot.style.stroke = color;
+      const date = new Date(p.day + "T00:00:00Z").toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
+      tip.querySelector(".lbl").textContent = date;
+      tip.querySelector(".val").textContent = p.v;
+      tip.style.left = `${p.x}px`; tip.style.top = `${p.y}px`;
+      tip.classList.add("show");
+    });
+    hit.addEventListener("mouseleave", () => {
+      dot.setAttribute("r", "3"); dot.setAttribute("fill", color); dot.style.stroke = "";
+      tip.classList.remove("show");
+    });
   });
-  svg.innerHTML = svgContent;
 }
+window.addEventListener("resize", () => Object.entries(areaCharts).forEach(([id, c]) => drawAreaChart(id, c.dayCounts, c.color)));
 
 async function loadAnalytics() {
   try {
@@ -475,8 +521,8 @@ async function loadAnalytics() {
     const byType = Object.fromEntries(d.submissionsByType.map((r) => [r.type, r.c]));
     document.getElementById("statWholesale").textContent = byType.wholesale || 0;
     document.getElementById("statNewsletter").textContent = byType.newsletter || 0;
-    drawBarChart("viewsChart", d.viewsByDay, "#9073BB");
-    drawBarChart("subsChart", d.submissionsByDay, "#592E74");
+    drawAreaChart("viewsChart", d.viewsByDay, "#592E74");
+    drawAreaChart("subsChart", d.submissionsByDay, "#9073BB");
   } catch (err) {
     console.error(err);
   }
