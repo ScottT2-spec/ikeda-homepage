@@ -79,17 +79,25 @@
 
   /* ---- submissions ---- */
   .sub-empty{color:#889;font-size:14px;padding:20px 0;text-align:center;}
-  .sub-item{border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:12px;background:#fff;}
-  .sub-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
   .sub-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;
     padding:3px 9px;border-radius:20px;color:#fff;}
   .sub-badge[data-type=contact]{background:#4A6FA5;}
   .sub-badge[data-type=wholesale]{background:var(--clay);}
   .sub-badge[data-type=newsletter]{background:var(--moss);}
   .sub-date{font-size:12px;color:#889;white-space:nowrap;}
-  .sub-row{font-size:14px;margin:3px 0;}
-  .sub-row b{color:#556;font-weight:600;margin-right:4px;}
-  .sub-del{background:none;color:#C0392B;font-size:12px;font-weight:600;padding:4px 8px;}
+  .sub-table-wrap{background:#fff;border:1px solid var(--line);border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .sub-table{width:100%;min-width:760px;table-layout:fixed;border-collapse:collapse;font-size:13px;}
+  .sub-table th{background:#F1F3EE;color:#556;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  .sub-table td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .sub-table tbody tr:last-child td{border-bottom:none;}
+  .sub-table tbody tr:hover{background:#FAFBF8;}
+  .sub-table td.msg{white-space:pre-wrap;}
+  .sub-table td.nowrap{white-space:nowrap;}
+  .sub-table td{overflow-wrap:anywhere;}
+  .sub-table td .sub-date{display:block;margin-top:6px;white-space:normal;}
+  .sub-table td .sub-badge{white-space:nowrap;}
+  .sub-table .none{color:#B4BAB0;}
+  .sub-del{background:none;color:#C0392B;font-size:12px;font-weight:600;padding:4px 6px;white-space:nowrap;}
   .sub-filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
   .sub-filters button{background:#fff;border:1px solid var(--line);color:#556;font-weight:600;padding:7px 14px;}
   .sub-filters button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
@@ -389,26 +397,25 @@ function renderSubmissions() {
     list.innerHTML = `<p class="sub-empty">No ${currentFilter === "all" ? "" : currentFilter + " "}submissions yet.</p>`;
     return;
   }
-  list.innerHTML = filtered.map((s) => {
+  const cell = (v, cls = "") => v ? `<td class="${cls}">${escapeHtml(v)}</td>` : `<td class="${cls}"><span class="none">—</span></td>`;
+  const rows = filtered.map((s) => {
     const date = new Date(s.created_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
-    const rows = [];
-    if (s.name) rows.push(`<div class="sub-row"><b>Name:</b>${escapeHtml(s.name)}</div>`);
-    rows.push(`<div class="sub-row"><b>Email:</b>${escapeHtml(s.email)}</div>`);
-    if (s.company) rows.push(`<div class="sub-row"><b>Company:</b>${escapeHtml(s.company)}</div>`);
-    if (s.phone) rows.push(`<div class="sub-row"><b>Phone:</b>${escapeHtml(s.phone)}</div>`);
-    if (s.volume) rows.push(`<div class="sub-row"><b>Est. volume:</b>${escapeHtml(s.volume)}</div>`);
-    if (s.message) rows.push(`<div class="sub-row"><b>Message:</b>${escapeHtml(s.message)}</div>`);
-    return `<div class="sub-item">
-      <div class="sub-item-top">
-        <span class="sub-badge" data-type="${s.type}">${s.type}</span>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="sub-date">${date}</span>
-          <button class="sub-del" onclick="deleteSubmission(${s.id})">Delete</button>
-        </div>
-      </div>
-      ${rows.join("")}
-    </div>`;
+    return `<tr>
+      <td><span class="sub-badge" data-type="${escapeHtml(s.type)}">${escapeHtml(s.type)}</span><span class="sub-date">${date}</span></td>
+      ${cell(s.name)}
+      ${cell(s.email)}
+      ${cell(s.company)}
+      ${cell(s.phone, "nowrap")}
+      ${cell(s.volume)}
+      ${cell(s.message, "msg")}
+      <td><button class="sub-del" onclick="deleteSubmission(${Number(s.id)})">Delete</button></td>
+    </tr>`;
   }).join("");
+  list.innerHTML = `<div class="sub-table-wrap"><table class="sub-table">
+    <colgroup><col style="width:15%"><col style="width:12%"><col style="width:18%"><col style="width:11%"><col style="width:11%"><col style="width:8%"><col style="width:16%"><col style="width:9%"></colgroup>
+    <thead><tr><th>Type / Date</th><th>Name</th><th>Email</th><th>Company</th><th>Phone</th><th>Volume</th><th>Message</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
 }
 
 async function loadSubmissions() {
