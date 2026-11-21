@@ -58,7 +58,7 @@ const CONTENT_DEFAULTS = {
   "card1.body": "Reed diffusers, candles, and room sprays — stocked in the pack sizes retail shelves actually move.",
   "card1.image_url": "/ikeda-home-fragrance.jpg",
   "card2.title": "Auto & Mobile",
-  "card2.body": "Vent clips and car sprays built for rental fleets, taxis, and forecourt retail alike.",
+  "card2.body": "Car diffusers and air fresheners built for rental fleets, taxis, and forecourt retail alike.",
   "card2.image_url": "/ikeda-car-scent.jpg",
   "card3.title": "Commercial & Wholesale",
   "card3.body": "Bulk fresheners, with custom fragrance and private label on request.",
