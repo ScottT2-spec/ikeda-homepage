@@ -119,6 +119,9 @@
   .product-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
   .product-fig figcaption b{color:var(--ink);font-weight:600;}
   .product-fig + .product-fig{margin-top:-14px;}
+  .gallery.set-gallery{grid-template-columns:repeat(3,1fr);}
+  .gallery.set-gallery .wide{grid-column:1/-1;}
+  @media (max-width:700px){ .gallery.set-gallery{grid-template-columns:1fr;} }
   .pillar[id]{scroll-margin-top:100px;}
   .contact-band{background:var(--paper-2);padding:64px 0;text-align:center;}
   .contact-band h2{font-size:26px;}
@@ -206,6 +209,15 @@
       <p>A step up from clips — refillable or cartridge-based diffusion for longer-lasting in-cab fragrance.</p>
     </div>
     <figure class="product-fig"><img src="/product-smart-car-refill.jpg" alt="IKEDA smart car diffuser refill boxes and bottle" loading="lazy"><figcaption><b>Smart Car Diffuser Refill · 100ml</b> — Honeydew Melon, Oud, English Pear & Freesia, Shangri-La, Peach, Secret Musk, Cherry, Vanilla, Lavender, Ocean Jasmine, Freesia</figcaption></figure>
+    <figure class="product-fig">
+      <div class="gallery set-gallery">
+        <img src="/product-car-set-peach.jpg" alt="IKEDA Peach diffuser set in a peach orchard" loading="lazy">
+        <img src="/product-car-set-vanilla.jpg" alt="IKEDA Vanilla diffuser set with vanilla ice cream" loading="lazy">
+        <img src="/product-car-set-lavender.jpg" alt="IKEDA Lavender diffuser set in a lavender field" loading="lazy">
+        <img src="/product-car-set-cherry.jpg" alt="IKEDA Cherry diffuser set in a cherry orchard" loading="lazy" class="wide">
+      </div>
+      <figcaption><b>Smart Car Diffuser Set</b> — Honeydew Melon, Oud, English Pear & Freesia, Shangri-La, Peach, Secret Musk, Cherry, Vanilla, Lavender, Ocean Jasmine, Freesia</figcaption>
+    </figure>
     <div class="pillar">
       <h3>Auto & Home Air Freshener</h3>
       <p>A bottle air freshener for the car and the home.</p>
