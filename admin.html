@@ -42,6 +42,15 @@
   .nav-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:6px;color:rgba(255,255,255,0.75);
     font-size:14px;font-weight:600;cursor:pointer;margin-bottom:2px;}
   .nav-item:hover{background:rgba(255,255,255,0.06);}
+  /* Lucide icons, filled. .cut/.hole use the row's own background so inner details stay visible. */
+  .nav-item{--ic-cut:var(--ink);}
+  .nav-item:hover{--ic-cut:#2C372F;}
+  .nav-item.active{--ic-cut:var(--clay);}
+  .ic{width:18px;height:18px;flex-shrink:0;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .ic .line{fill:none;}
+  .ic .cut{fill:none;stroke:var(--ic-cut);}
+  .ic .hole{fill:var(--ic-cut);stroke:var(--ic-cut);}
+  .hamburger svg{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
   .nav-item.active{background:var(--clay);color:#fff;}
   .nav-item .count{margin-left:auto;background:rgba(255,255,255,0.15);font-size:11px;padding:2px 7px;border-radius:20px;}
   .nav-item.active .count{background:rgba(255,255,255,0.25);}
@@ -144,16 +153,16 @@
 
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-brand">IKEDA Admin</div>
-      <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">📝 Dashboard</div>
-      <div class="nav-item" data-tab="analytics" onclick="switchTab('analytics')">📊 Analytics</div>
-      <div class="nav-item" data-tab="submissions" onclick="switchTab('submissions')">📥 Submissions <span class="count" id="subCount">0</span></div>
-      <div class="nav-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Settings</div>
+      <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</div>
+      <div class="nav-item" data-tab="analytics" onclick="switchTab('analytics')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="line" d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="15" y="5" width="4" height="12" rx="1"/><rect x="7" y="8" width="4" height="9" rx="1"/></svg> Analytics</div>
+      <div class="nav-item" data-tab="submissions" onclick="switchTab('submissions')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><polyline class="cut" points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg> Submissions <span class="count" id="subCount">0</span></div>
+      <div class="nav-item" data-tab="settings" onclick="switchTab('settings')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle class="hole" cx="12" cy="12" r="3"/></svg> Settings</div>
       <div class="sidebar-foot"><a href="#" onclick="logout();return false;">Log out</a></div>
     </nav>
 
     <div class="main">
       <div class="topbar">
-        <button class="hamburger" onclick="openSidebar()" aria-label="Menu">☰</button>
+        <button class="hamburger" onclick="openSidebar()" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
         <h1 id="topbarTitle">Dashboard</h1>
       </div>
 
