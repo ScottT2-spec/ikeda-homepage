@@ -6,15 +6,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root{
-    --ink:#1E2A22; --line:#D9E0D4; --paper:#F7F8F5; --clay:#B5572F; --moss:#5C7A62;
+    --ink:#382451; --line:#D7D1D7; --paper:#F5F2F0; --clay:#592E74; --moss:#9073BB;
     --sidebar-w:230px;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:system-ui,sans-serif;background:var(--paper);color:var(--ink);}
   h1{font-size:21px;margin:0;}
-  h2{font-size:15px;margin:0 0 16px;text-transform:uppercase;letter-spacing:0.04em;color:#556;}
+  h2{font-size:15px;margin:0 0 16px;text-transform:uppercase;letter-spacing:0.04em;color:#5B4E6E;}
   .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;margin-bottom:18px;}
-  label{display:block;font-size:13px;color:#556;margin:14px 0 5px;}
+  label{display:block;font-size:13px;color:#5B4E6E;margin:14px 0 5px;}
   label:first-of-type{margin-top:0;}
   input,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:4px;font-size:14px;font-family:inherit;}
   textarea{resize:vertical;}
@@ -44,7 +44,7 @@
   .nav-item:hover{background:rgba(255,255,255,0.06);}
   /* Lucide icons, filled. .cut/.hole use the row's own background so inner details stay visible. */
   .nav-item{--ic-cut:var(--ink);}
-  .nav-item:hover{--ic-cut:#2C372F;}
+  .nav-item:hover{--ic-cut:#44315B;}
   .nav-item.active{--ic-cut:var(--clay);}
   .ic{width:18px;height:18px;flex-shrink:0;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
   .ic .line{fill:none;}
@@ -75,49 +75,49 @@
   .panel{display:none;}
   .panel.active{display:block;}
   .panel-head{margin-bottom:22px;}
-  .panel-head p{color:#667;font-size:13.5px;margin:4px 0 0;}
+  .panel-head p{color:#6F6380;font-size:13.5px;margin:4px 0 0;}
 
   /* ---- submissions ---- */
-  .sub-empty{color:#889;font-size:14px;padding:20px 0;text-align:center;}
+  .sub-empty{color:#8C809A;font-size:14px;padding:20px 0;text-align:center;}
   .sub-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;
     padding:3px 9px;border-radius:20px;color:#fff;}
   .sub-badge[data-type=contact]{background:#4A6FA5;}
   .sub-badge[data-type=wholesale]{background:var(--clay);}
   .sub-badge[data-type=newsletter]{background:var(--moss);}
-  .sub-date{font-size:12px;color:#889;white-space:nowrap;}
+  .sub-date{font-size:12px;color:#8C809A;white-space:nowrap;}
   .sub-table-wrap{background:#fff;border:1px solid var(--line);border-radius:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .sub-table{width:100%;min-width:760px;table-layout:fixed;border-collapse:collapse;font-size:13px;}
-  .sub-table th{background:#F1F3EE;color:#556;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  .sub-table th{background:#EBE5EB;color:#5B4E6E;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
   .sub-table td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
   .sub-table tbody tr:last-child td{border-bottom:none;}
-  .sub-table tbody tr:hover{background:#FAFBF8;}
+  .sub-table tbody tr:hover{background:#F9F7F9;}
   .sub-table td.msg{white-space:pre-wrap;}
   .sub-table td.nowrap{white-space:nowrap;}
   .sub-table td{overflow-wrap:anywhere;}
   .sub-table td .sub-date{display:block;margin-top:6px;white-space:normal;}
   .sub-table td .sub-badge{white-space:nowrap;}
-  .sub-table .none{color:#B4BAB0;}
+  .sub-table .none{color:#BCB4C0;}
   .sub-del{background:none;color:#C0392B;font-size:12px;font-weight:600;padding:4px 6px;white-space:nowrap;}
   .sub-filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
-  .sub-filters button{background:#fff;border:1px solid var(--line);color:#556;font-weight:600;padding:7px 14px;}
+  .sub-filters button{background:#fff;border:1px solid var(--line);color:#5B4E6E;font-weight:600;padding:7px 14px;}
   .sub-filters button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
 
   /* ---- analytics ---- */
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px;}
   .stat-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;}
   .stat-num{font-size:30px;font-weight:700;line-height:1.1;}
-  .stat-label{font-size:12.5px;color:#889;margin-top:4px;}
+  .stat-label{font-size:12.5px;color:#8C809A;margin-top:4px;}
   .chart-card svg{width:100%;height:160px;display:block;}
   .chart-bar{fill:var(--clay);}
   .chart-bar.alt{fill:var(--moss);}
-  .chart-axis{font-size:9px;fill:#889;}
-  .legend{display:flex;gap:16px;font-size:12.5px;color:#556;margin-top:10px;}
+  .chart-axis{font-size:9px;fill:#8C809A;}
+  .legend{display:flex;gap:16px;font-size:12.5px;color:#5B4E6E;margin-top:10px;}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
 
   /* ---- dashboard overview ---- */
   .welcome{margin-bottom:22px;}
-  .welcome p{color:#667;font-size:13.5px;margin:4px 0 0;}
+  .welcome p{color:#6F6380;font-size:13.5px;margin:4px 0 0;}
   .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start;}
   @media (max-width:760px){ .dash-grid{grid-template-columns:1fr;} }
   .recent-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
@@ -125,19 +125,19 @@
   .recent-item:last-child{border-bottom:none;}
   .recent-main{min-width:0;}
   .recent-name{font-size:14px;font-weight:600;color:var(--ink);}
-  .recent-sub{font-size:12.5px;color:#889;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .recent-sub{font-size:12.5px;color:#8C809A;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .recent-meta{text-align:right;flex-shrink:0;}
-  .recent-date{font-size:11.5px;color:#889;}
+  .recent-date{font-size:11.5px;color:#8C809A;}
   .quick-link{display:flex;align-items:center;justify-content:space-between;gap:10px;
     width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:6px;
     padding:12px 14px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:10px;}
   .quick-link:hover{border-color:var(--clay);}
   .quick-link span.arrow{color:var(--clay);font-weight:700;}
-  .empty-note{color:#889;font-size:13.5px;}
+  .empty-note{color:#8C809A;font-size:13.5px;}
 
   /* ---- settings sub-nav ---- */
   .subnav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-  .subnav button{background:#fff;border:1px solid var(--line);color:#556;font-weight:600;padding:8px 16px;}
+  .subnav button{background:#fff;border:1px solid var(--line);color:#5B4E6E;font-weight:600;padding:8px 16px;}
   .subnav button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
   .subpanel{display:none;}
   .subpanel.active{display:block;}
@@ -242,7 +242,7 @@
           </div>
 
           <div id="settings-content" class="subpanel active">
-            <p style="color:#667;font-size:13.5px;margin:-8px 0 18px;">Every field here is live on the homepage immediately after saving.</p>
+            <p style="color:#6F6380;font-size:13.5px;margin:-8px 0 18px;">Every field here is live on the homepage immediately after saving.</p>
             <div id="fields"></div>
             <button class="btn-save" onclick="saveAll()">Save Changes</button>
             <p class="status" id="saveStatus"></p>
@@ -475,8 +475,8 @@ async function loadAnalytics() {
     const byType = Object.fromEntries(d.submissionsByType.map((r) => [r.type, r.c]));
     document.getElementById("statWholesale").textContent = byType.wholesale || 0;
     document.getElementById("statNewsletter").textContent = byType.newsletter || 0;
-    drawBarChart("viewsChart", d.viewsByDay, "#5C7A62");
-    drawBarChart("subsChart", d.submissionsByDay, "#B5572F");
+    drawBarChart("viewsChart", d.viewsByDay, "#9073BB");
+    drawBarChart("subsChart", d.submissionsByDay, "#592E74");
   } catch (err) {
     console.error(err);
   }
