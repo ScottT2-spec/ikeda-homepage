@@ -8,9 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#2A1840; --clay:#592E74; --moss:#9073BB; --paper:#F7F4FA; --lilac:#EDE5F5; --line:#E6DFEC;
+    --ink:#2A1840; --clay:#592E74; --moss:#9073BB; --paper:#F8F5F1; --lilac:#EDE5F5; --line:#E6DFEC;
     --t2:#6A5C7E; --t3:#8F83A0; --ring:rgba(89,46,116,.18);
     --sidebar-w:240px;
+    --gold:#C8963E; --gold-soft:#F7ECD7; --gold-ink:#8A5F14;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);
@@ -262,6 +263,49 @@
   .field-card h2{font-size:17px;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid var(--line);}
   .field-card label:first-of-type{margin-top:14px;}
   @media (max-width:980px){ .settings-cols{grid-template-columns:1fr;} .field-nav{display:none;} }
+
+  /* ---- purple + gold balance ---- */
+  .sidebar{background:#fff;color:var(--t2);border-right:1px solid var(--line);}
+  .sidebar-brand{color:var(--ink);}
+  .sidebar-brand small{color:var(--gold-ink);font-weight:600;}
+  .nav-item{color:var(--t2);--ic-cut:#fff;}
+  .nav-item:hover{background:var(--paper);color:var(--ink);--ic-cut:var(--paper);}
+  .nav-item.active{background:var(--lilac);color:var(--clay);--ic-cut:var(--lilac);box-shadow:inset 3px 0 0 var(--gold);}
+  .nav-item .count{background:var(--paper);color:var(--t2);}
+  .nav-item.active .count{background:var(--gold);color:#fff;}
+  .sidebar-foot{border-top-color:var(--line);}
+  .sidebar-foot a{color:var(--t2);}
+  .sidebar-foot a:hover{color:var(--ink);background:var(--paper);}
+  .backdrop{background:rgba(42,24,64,.35);}
+
+  .login-brand::before{background:var(--gold);opacity:1;width:150px;height:150px;right:110px;bottom:90px;}
+  .hero::before{background:var(--gold);opacity:1;width:90px;height:90px;right:150px;top:-30px;}
+  .hero .summary{color:#fff;}
+  .hero .date{color:#CDBBE3;}
+
+  .stat-grid .stat-card:first-child{background:#fff;border-color:var(--line);color:var(--ink);--ic-cut:var(--gold-soft);}
+  .stat-grid .stat-card:first-child .stat-label{color:var(--t3);}
+  .stat-grid .stat-card:first-child .stat-ico{background:var(--gold-soft);color:var(--gold-ink);}
+  .stat-card:nth-child(2) .stat-ico,.stat-card:nth-child(4) .stat-ico{background:var(--lilac);color:var(--clay);}
+  .stat-card:nth-child(3) .stat-ico{background:var(--gold-soft);color:var(--gold-ink);--ic-cut:var(--gold-soft);}
+  .stat-card:nth-child(3){--ic-cut:var(--gold-soft);}
+
+  .sub-badge[data-type=newsletter]{background:var(--gold-soft);color:var(--gold-ink);}
+  .avatar[data-type=newsletter]{background:var(--gold-soft);color:var(--gold-ink);}
+  .mix-row[data-type=newsletter] .mix-bar i{background:var(--gold);}
+  .mix-row[data-type=newsletter] .mix-bar{background:var(--gold-soft);}
+  .sub-filters button.active .n{color:var(--gold-ink);}
+  .btn-save{box-shadow:0 10px 24px -8px rgba(89,46,116,.4);}
+  .btn-save,.btn-primary{background:var(--clay);}
+  .quick-link{background:#fff;border-color:var(--line);}
+  .quick-link:hover{background:var(--gold-soft);border-color:var(--gold);color:var(--ink);}
+  .card-head button{color:var(--gold-ink);}
+  .card-head button:hover{background:var(--gold-soft);}
+  .field-nav a:hover,.field-nav a.on{background:var(--gold-soft);color:var(--gold-ink);}
+  .sub-table th{background:#F6F1EA;}
+  .sub-table tbody tr:hover{background:#FCFAF7;}
+  .area-tooltip .lbl{color:#F0D9A8;}
+  .sub-filters,.subnav{background:#EFE9E1;}
 
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
@@ -681,7 +725,7 @@ async function loadAnalytics() {
     document.getElementById("statWholesale").textContent = byType.wholesale || 0;
     document.getElementById("statNewsletter").textContent = byType.newsletter || 0;
     drawAreaChart("viewsChart", d.viewsByDay, "#592E74");
-    drawAreaChart("subsChart", d.submissionsByDay, "#9073BB");
+    drawAreaChart("subsChart", d.submissionsByDay, "#C8963E");
   } catch (err) {
     console.error(err);
   }
