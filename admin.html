@@ -162,10 +162,11 @@
   .area-dot{stroke:#fff;stroke-width:2;opacity:0;pointer-events:none;}
   .area-hit{fill:transparent;cursor:pointer;}
   /* tooltip: same look as the staff dashboards (white, 8px radius, soft shadow, no border) */
-  .area-tooltip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-125%);background:#fff;color:#334155;
-    border-radius:8px;padding:10px;font-size:13px;white-space:nowrap;box-shadow:0 4px 6px -1px rgb(0 0 0 / .1),0 2px 4px -2px rgb(0 0 0 / .1);z-index:2;}
+  .area-tooltip{position:absolute;pointer-events:none;opacity:0;background:#fff;color:#1e293b;
+    border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.55;white-space:nowrap;box-shadow:0 4px 6px -1px rgb(0 0 0 / .1),0 2px 4px -2px rgb(0 0 0 / .1);z-index:2;}
   .area-tooltip.show{opacity:1;}
-  .area-tooltip .lbl{display:block;color:#334155;margin-bottom:2px;}
+  .area-tooltip .lbl{display:block;color:#1e293b;}
+  .area-tooltip .val{display:block;color:#1e293b;}
 
   /* ---- dashboard overview ---- */
   .welcome{margin-bottom:26px;}
@@ -306,7 +307,8 @@
   .field-nav a:hover,.field-nav a.on{background:var(--gold-soft);color:var(--gold-ink);}
   .sub-table th{background:#F6F1EA;}
   .sub-table tbody tr:hover{background:#FCFAF7;}
-  .area-tooltip .lbl{display:block;color:#334155;margin-bottom:2px;}
+  .area-tooltip .lbl{display:block;color:#1e293b;}
+  .area-tooltip .val{display:block;color:#1e293b;}
   .sub-filters,.subnav{background:#EFE9E1;}
 
   /* ---- honey sidebar ---- */
@@ -846,8 +848,11 @@ async function deleteSubmission(id) {
 
 const areaCharts = {};
 
-function drawAreaChart(id, dayCounts, color) {
-  areaCharts[id] = { dayCounts, color };
+function colWpx(pts) { return pts.length > 1 ? pts[1].x - pts[0].x : 1; }
+
+function drawAreaChart(id, dayCounts) {
+  const color = "#475569", fillColor = "#94a3b8";
+  areaCharts[id] = { dayCounts };
   const wrap = document.getElementById(id);
   if (!wrap) return;
   const svg = wrap.querySelector("svg");
@@ -863,7 +868,7 @@ function drawAreaChart(id, dayCounts, color) {
   const values = days.map((d) => map[d] || 0);
 
   const W = wrap.clientWidth || 560, H = wrap.clientHeight || 230;
-  const padL = 26, padR = 10, padT = 10, padB = 30;
+  const padL = 28, padR = 6, padT = 10, padB = 30;
   const innerW = W - padL - padR, innerH = H - padT - padB;
   const max = Math.max(...values, 1);
   const step = max <= 4 ? 1 : Math.ceil(max / 4);       // whole-number ticks only
@@ -885,18 +890,22 @@ function drawAreaChart(id, dayCounts, color) {
     grid += `<line x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/>`;
     yLabels += `<text x="${padL - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
   }
-  const every = W < 420 ? 3 : W < 640 ? 2 : 1;
-  const xLabels = pts.map((p, i) => i % every === 0
-    ? `<text x="${p.x}" y="${H - 8}" text-anchor="middle">${p.day.slice(5).replace("-", "/")}</text>` : "").join("");
+  const fmt = (d) => `${+d.slice(5, 7)}/${+d.slice(8, 10)}/${d.slice(0, 4)}`;
+  const labelW = 84, gap = Math.max(1, Math.ceil(labelW / colWpx(pts)));
+  const lastI = pts.length - 1;
+  const showI = new Set([0, lastI]);
+  for (let i = lastI - gap; i > gap - 1 && i > 0; i -= gap) showI.add(i);
+  const xLabels = pts.map((p, i) => showI.has(i)
+    ? `<text x="${p.x}" y="${H - 8}" text-anchor="${i === 0 ? "start" : i === lastI ? "end" : "middle"}">${fmt(p.day)}</text>` : "").join("");
   const colW = innerW / Math.max(pts.length - 1, 1);
   const dots = pts.map((p, i) => `<rect class="area-hit" data-i="${i}" x="${p.x - colW / 2}" y="${padT}" width="${colW}" height="${innerH}"></rect>`).join("");
   const gid = "grad-" + id;
 
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="${color}" stop-opacity="0.3"/><stop offset="95%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+  svg.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="${fillColor}" stop-opacity="0.3"/><stop offset="95%" stop-color="${fillColor}" stop-opacity="0"/></linearGradient></defs>
     <g class="area-grid">${grid}</g><g class="area-axis">${yLabels}${xLabels}</g>
     <path d="${area}" fill="url(#${gid})" stroke="none"></path>
-    <path d="${line}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"></path>
+    <path d="${line}" fill="none" stroke="${color}" stroke-width="1" stroke-linejoin="round"></path>
     <line class="area-cursor" x1="0" y1="${padT}" x2="0" y2="${base}"></line>
     <circle class="area-dot" r="4" fill="${color}" cx="0" cy="0"></circle>${dots}`;
   const cursor = svg.querySelector(".area-cursor"), adot = svg.querySelector(".area-dot");
@@ -904,15 +913,20 @@ function drawAreaChart(id, dayCounts, color) {
 
   svg.querySelectorAll(".area-hit").forEach((hit) => {
     const p = pts[+hit.dataset.i];
-    hit.addEventListener("mouseenter", () => {
+    const place = (e) => {
+      const r = wrap.getBoundingClientRect();
+      const tw = tip.offsetWidth || 120;
+      const left = p.x + 12 + tw > W ? p.x - 12 - tw : p.x + 12;
+      tip.style.left = `${left}px`; tip.style.top = `${Math.max(0, e.clientY - r.top - 20)}px`;
+    };
+    hit.addEventListener("mouseenter", (e) => {
       cursor.setAttribute("x1", p.x); cursor.setAttribute("x2", p.x); cursor.style.opacity = 1;
       adot.setAttribute("cx", p.x); adot.setAttribute("cy", p.y); adot.style.opacity = 1;
-      const date = new Date(p.day + "T00:00:00Z").toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
-      tip.querySelector(".lbl").textContent = date;
-      const val = tip.querySelector(".val"); val.textContent = `${seriesName} : ${p.v}`; val.style.color = color;
-      tip.style.left = `${p.x}px`; tip.style.top = `${p.y}px`;
-      tip.classList.add("show");
+      tip.querySelector(".lbl").textContent = fmt(p.day);
+      tip.querySelector(".val").textContent = `${seriesName.toLowerCase()} : ${p.v}`;
+      tip.classList.add("show"); place(e);
     });
+    hit.addEventListener("mousemove", place);
     hit.addEventListener("mouseleave", () => {
       cursor.style.opacity = 0; adot.style.opacity = 0; tip.classList.remove("show");
     });
@@ -950,8 +964,8 @@ async function loadAnalytics() {
     const byType = Object.fromEntries(d.submissionsByType.map((r) => [r.type, r.c]));
     document.getElementById("statWholesale").textContent = byType.wholesale || 0;
     document.getElementById("statNewsletter").textContent = byType.newsletter || 0;
-    drawAreaChart("viewsChart", d.viewsByDay, "#7A2FC0");
-    drawAreaChart("subsChart", d.submissionsByDay, "#E2A72E");
+    drawAreaChart("viewsChart", d.viewsByDay);
+    drawAreaChart("subsChart", d.submissionsByDay);
     renderAnalyticsExtras(d);
   } catch (err) {
     console.error(err);
@@ -1016,7 +1030,7 @@ async function loadDashboard() {
       document.getElementById("dashSubs").textContent = d.totalSubmissions;
       document.getElementById("dashWholesale").textContent = byType.wholesale || 0;
       document.getElementById("dashNewsletter").textContent = byType.newsletter || 0;
-      drawAreaChart("dashViewsChart", d.viewsByDay, "#7A2FC0");
+      drawAreaChart("dashViewsChart", d.viewsByDay);
     }
   } catch (err) { console.error(err); }
   await loadSubmissions();
