@@ -402,9 +402,11 @@
   .login-brand::before{background:var(--clay);}
 
   /* ---- login: same form design as the Prokip site builder ---- */
-  #loginView{min-height:100vh;background:linear-gradient(to bottom,#F9FAFB,rgba(236,253,245,.3));}
+  #loginView{min-height:100vh;}
+  .sb-page{background:linear-gradient(to bottom,#F9FAFB,rgba(236,253,245,.3));}
   .sb-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px 16px;}
   .sb-wrap{width:100%;max-width:448px;}
+  @media (max-width:760px){ .sb-page{min-height:0;align-items:flex-start;padding:28px 16px 40px;} }
   .sb-card{background:#fff;border-radius:24px;padding:32px;box-shadow:0 10px 15px -3px rgba(229,231,235,.6),0 4px 6px -4px rgba(229,231,235,.6);}
   .sb-logo{display:flex;justify-content:center;margin-bottom:24px;}
   .sb-logo img{height:48px;width:auto;filter:brightness(0);display:block;}
@@ -441,10 +443,14 @@
 <body>
 
 <div id="loginView">
-  <div class="sb-page">
+  <div class="login-shell">
+    <div class="login-brand">
+      <img class="login-logo" src="/logo-white.png" alt="IKEDA">
+      <p class="login-tag">Manage your site content, enquiries and traffic in one place.</p>
+    </div>
+    <div class="sb-page">
     <div class="sb-wrap">
       <div class="sb-card">
-        <div class="sb-logo"><img src="/logo-white.png" alt="IKEDA"></div>
         <div class="sb-head">
           <h1>Welcome Back</h1>
           <p>Sign in to your dashboard</p>
@@ -464,6 +470,7 @@
           <button type="submit" class="sb-submit">Sign In</button>
         </form>
       </div>
+    </div>
     </div>
   </div>
 </div>
