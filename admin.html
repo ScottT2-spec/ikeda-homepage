@@ -11,7 +11,7 @@
     --ink:#2A1840; --clay:#592E74; --moss:#9073BB; --paper:#F8F5F1; --lilac:#EDE5F5; --line:#E6DFEC;
     --t2:#6A5C7E; --t3:#8F83A0; --ring:rgba(89,46,116,.18);
     --sidebar-w:240px;
-    --gold:#C8963E; --gold-soft:#F7ECD7; --gold-ink:#8A5F14;
+    --gold:#E2A72E; --gold-soft:#FBEFD0; --gold-ink:#8C5E05;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);
@@ -725,7 +725,7 @@ async function loadAnalytics() {
     document.getElementById("statWholesale").textContent = byType.wholesale || 0;
     document.getElementById("statNewsletter").textContent = byType.newsletter || 0;
     drawAreaChart("viewsChart", d.viewsByDay, "#592E74");
-    drawAreaChart("subsChart", d.submissionsByDay, "#C8963E");
+    drawAreaChart("subsChart", d.submissionsByDay, "#E2A72E");
   } catch (err) {
     console.error(err);
   }
