@@ -401,6 +401,38 @@
 
   .login-brand::before{background:var(--clay);}
 
+  /* ---- login: same form design as the Prokip site builder ---- */
+  #loginView{min-height:100vh;background:linear-gradient(to bottom,#F9FAFB,rgba(236,253,245,.3));}
+  .sb-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px 16px;}
+  .sb-wrap{width:100%;max-width:448px;}
+  .sb-card{background:#fff;border-radius:24px;padding:32px;box-shadow:0 10px 15px -3px rgba(229,231,235,.6),0 4px 6px -4px rgba(229,231,235,.6);}
+  .sb-logo{display:flex;justify-content:center;margin-bottom:24px;}
+  .sb-logo img{height:48px;width:auto;filter:brightness(0);display:block;}
+  .sb-head{text-align:center;margin-bottom:32px;}
+  .sb-head h1{font-size:30px;font-weight:700;color:#111827;letter-spacing:-0.025em;line-height:1.2;}
+  .sb-head p{margin:8px 0 0;font-size:16px;color:#6B7280;}
+  .sb-form{display:flex;flex-direction:column;gap:20px;}
+  .sb-form label{display:block;font-size:12px;font-weight:600;color:#374151;text-transform:uppercase;letter-spacing:.025em;margin:0 0 8px;}
+  .sb-field{position:relative;}
+  .sb-ico{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;fill:#9CA3AF;stroke:#9CA3AF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;}
+  .sb-ico .ln{fill:none;}
+  .sb-field input{width:100%;border:0;background:#F3F4F6;border-radius:12px;padding:16px 16px 16px 48px;font-size:16px;color:#374151;transition:background .2s,box-shadow .2s;}
+  .sb-field input::placeholder{color:#9CA3AF;}
+  .sb-field input:focus{background:#F9FAFB;outline:none;box-shadow:0 0 0 2px rgba(148,163,184,.4);}
+  .sb-eye{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:0;padding:0;width:20px;height:20px;color:#9CA3AF;cursor:pointer;}
+  .sb-eye:hover{color:#4B5563;}
+  .sb-eye svg{width:20px;height:20px;fill:currentColor;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block;}
+  .sb-eye svg .ln{fill:none;}
+  .sb-eye .eye-off{display:none;}
+  .sb-eye.on .eye-on{display:none;}
+  .sb-eye.on .eye-off{display:block;}
+  .sb-remember{display:flex !important;align-items:center;gap:8px;text-transform:none !important;letter-spacing:0 !important;font-size:14px !important;font-weight:400 !important;color:#374151 !important;margin:0 !important;cursor:pointer;user-select:none;}
+  .sb-remember input{width:16px;height:16px;padding:0;accent-color:#475569;cursor:pointer;}
+  .sb-submit{width:100%;border-radius:12px;background:#475569;color:#fff;font-weight:600;padding:16px;font-size:16px;box-shadow:0 4px 6px -1px rgba(203,213,225,.4),0 2px 4px -2px rgba(203,213,225,.4);transition:background .2s;}
+  .sb-submit:hover{background:#334155;}
+  .sb-err{display:none;border-radius:12px;background:#FEF2F2;border:1px solid #FECACA;padding:12px 16px;font-size:14px;color:#B91C1C;margin:0;}
+  .sb-err:not(:empty){display:block;}
+
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
   }
@@ -409,20 +441,29 @@
 <body>
 
 <div id="loginView">
-  <div class="login-shell">
-    <div class="login-brand">
-      <img class="login-logo" src="/logo-white.png" alt="IKEDA">
-      <p class="login-tag">Manage your site content, enquiries and traffic in one place.</p>
-    </div>
-    <div class="login-form-wrap">
-      <form class="login-form" onsubmit="login();return false;">
-        <h1>Welcome back</h1>
-        <p class="sub">Log in to the IKEDA admin.</p>
-        <label for="loginUser">Username</label><input type="text" id="loginUser" autocomplete="username">
-        <label for="loginPass">Password</label><input type="password" id="loginPass" autocomplete="current-password">
-        <button type="submit" class="btn-primary">Log in</button>
-        <p class="status" id="loginStatus"></p>
-      </form>
+  <div class="sb-page">
+    <div class="sb-wrap">
+      <div class="sb-card">
+        <div class="sb-logo"><img src="/logo-white.png" alt="IKEDA"></div>
+        <div class="sb-head">
+          <h1>Welcome Back</h1>
+          <p>Sign in to your dashboard</p>
+        </div>
+        <form class="sb-form" onsubmit="login();return false;">
+          <div class="sb-err" id="loginStatus" role="alert"></div>
+          <div>
+            <label for="loginUser">Username</label>
+            <div class="sb-field"><svg class="sb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><input type="text" id="loginUser" autocomplete="username" placeholder="Enter your username" required></div>
+          </div>
+          <div>
+            <label for="loginPass">Password</label>
+            <div class="sb-field"><svg class="sb-ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path class="ln" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><input type="password" id="loginPass" autocomplete="current-password" placeholder="Enter your password" required style="padding-right:48px;">
+              <button type="button" class="sb-eye" id="loginEye" aria-label="Show password" onclick="toggleLoginPw()"><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-on"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3" fill="#F3F4F6"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-off"><path class="ln" d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path class="ln" d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path class="ln" d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path class="ln" d="m2 2 20 20"/></svg></button></div>
+          </div>
+          <label class="sb-remember"><input type="checkbox" id="loginRemember"><span>Remember me</span></label>
+          <button type="submit" class="sb-submit">Sign In</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
@@ -570,7 +611,7 @@
 
 <script>
 const API_BASE = window.IKEDA_API_BASE || "";
-let token = localStorage.getItem("ikeda-admin-token");
+let token = localStorage.getItem("ikeda-admin-token") || sessionStorage.getItem("ikeda-admin-token");
 let allSubmissions = [];
 let currentFilter = "all";
 let fieldsLoaded = false;
@@ -975,11 +1016,19 @@ async function loadDashboard() {
   renderRecentSubmissions();
 }
 
+function toggleLoginPw() {
+  const i = document.getElementById("loginPass"), btn = document.getElementById("loginEye");
+  const show = i.type === "password";
+  i.type = show ? "text" : "password";
+  btn.classList.toggle("on", show);
+  btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+}
+
 async function login() {
   const username = document.getElementById("loginUser").value;
   const password = document.getElementById("loginPass").value;
   const status = document.getElementById("loginStatus");
-  status.textContent = "Logging in…"; status.removeAttribute("data-s");
+  status.textContent = ""; status.removeAttribute("data-s");
   try {
     const res = await fetch(`${API_BASE}/api/admin/login`, {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -988,7 +1037,9 @@ async function login() {
     const json = await res.json();
     if (!json.success) throw new Error(json.error);
     token = json.token;
-    localStorage.setItem("ikeda-admin-token", token);
+    const remember = document.getElementById("loginRemember").checked;
+    (remember ? localStorage : sessionStorage).setItem("ikeda-admin-token", token);
+    (remember ? sessionStorage : localStorage).removeItem("ikeda-admin-token");
     showApp();
   } catch (err) {
     status.textContent = err.message || "Login failed";
@@ -997,7 +1048,7 @@ async function login() {
 }
 
 function logout() {
-  localStorage.removeItem("ikeda-admin-token");
+  localStorage.removeItem("ikeda-admin-token"); sessionStorage.removeItem("ikeda-admin-token");
   token = null;
   document.getElementById("appView").style.display = "none";
   document.getElementById("loginView").style.display = "block";
