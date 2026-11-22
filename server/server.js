@@ -217,7 +217,14 @@ app.get("/api/admin/analytics", requireAdmin, (req, res) => {
     SELECT strftime('%Y-%m-%d', created_at) AS day, COUNT(*) AS c FROM submissions
     WHERE created_at > datetime('now', '-14 days') GROUP BY day ORDER BY day
   `).all();
-  res.json({ success: true, data: { totalViews, viewsByDay, totalSubmissions, submissionsByType, submissionsByDay } });
+  const monthly = {};
+  const slot = (m) => (monthly[m] = monthly[m] || { month: m, views: 0, submissions: 0, wholesale: 0, contact: 0, newsletter: 0 });
+  db.prepare("SELECT strftime('%Y-%m', created_at) AS month, COUNT(*) AS c FROM page_views GROUP BY month").all()
+    .forEach((r) => { slot(r.month).views = r.c; });
+  db.prepare("SELECT strftime('%Y-%m', created_at) AS month, type, COUNT(*) AS c FROM submissions GROUP BY month, type").all()
+    .forEach((r) => { const x = slot(r.month); x.submissions += r.c; if (r.type in x) x[r.type] = r.c; });
+  res.json({ success: true, data: { totalViews, viewsByDay, totalSubmissions, submissionsByType, submissionsByDay,
+    monthly: Object.values(monthly).sort((a, b) => a.month.localeCompare(b.month)) } });
 });
 
 app.get("/api/content", (_req, res) => {

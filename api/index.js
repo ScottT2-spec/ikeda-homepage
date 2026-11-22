@@ -221,7 +221,7 @@ app.post("/api/track", async (req, res) => {
 
 app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
   const { query } = db();
-  const [totalViews, viewsByDay, totalSubs, subsByType, subsByDay] = await Promise.all([
+  const [totalViews, viewsByDay, totalSubs, subsByType, subsByDay, viewsByMonth, subsByMonth] = await Promise.all([
     query("SELECT COUNT(*)::int AS c FROM page_views"),
     query(`SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, COUNT(*)::int AS c
            FROM page_views WHERE created_at > NOW() - INTERVAL '14 days'
@@ -231,7 +231,15 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
     query(`SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, COUNT(*)::int AS c
            FROM submissions WHERE created_at > NOW() - INTERVAL '14 days'
            GROUP BY day ORDER BY day`),
+    query(`SELECT TO_CHAR(created_at, 'YYYY-MM') AS month, COUNT(*)::int AS c
+           FROM page_views GROUP BY month ORDER BY month`),
+    query(`SELECT TO_CHAR(created_at, 'YYYY-MM') AS month, type, COUNT(*)::int AS c
+           FROM submissions GROUP BY month, type ORDER BY month`),
   ]);
+  const monthly = {};
+  const slot = (m) => (monthly[m] = monthly[m] || { month: m, views: 0, submissions: 0, wholesale: 0, contact: 0, newsletter: 0 });
+  viewsByMonth.rows.forEach((r) => { slot(r.month).views = r.c; });
+  subsByMonth.rows.forEach((r) => { const x = slot(r.month); x.submissions += r.c; if (r.type in x) x[r.type] = r.c; });
   res.json({
     success: true,
     data: {
@@ -240,6 +248,7 @@ app.get("/api/admin/analytics", requireAdmin, async (req, res) => {
       totalSubmissions: totalSubs.rows[0].c,
       submissionsByType: subsByType.rows,
       submissionsByDay: subsByDay.rows,
+      monthly: Object.values(monthly).sort((a, b) => a.month.localeCompare(b.month)),
     },
   });
 });

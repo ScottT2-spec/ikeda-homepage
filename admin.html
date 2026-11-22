@@ -437,6 +437,32 @@
   .sb-err{display:none;border-radius:12px;background:#FEF2F2;border:1px solid #FECACA;padding:12px 16px;font-size:14px;color:#B91C1C;margin:0;}
   .sb-err:not(:empty){display:block;}
 
+  /* ---- monthly performance (same components as the staff dashboards) ---- */
+  .m-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px;}
+  @media (max-width:860px){ .m-stats{grid-template-columns:1fr 1fr;} }
+  .mcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(51,23,94,.06);}
+  .mlabel{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#94A3B8;margin-bottom:8px;}
+  .mnum{font-size:34px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  .msub{font-size:13.5px;color:#94A3B8;margin-top:6px;}
+  .m-filter-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+  .m-filter-head h2{margin:0;display:flex;align-items:center;gap:10px;font-size:16px;}
+  .m-filter-head h2 svg{width:20px;height:20px;fill:#7A2FC0;stroke:#7A2FC0;stroke-width:2;stroke-linejoin:round;}
+  .reset-btn{display:inline-flex;align-items:center;gap:8px;background:#F1F5F9;color:#475569;padding:9px 14px;border-radius:12px;font-size:14px;}
+  .reset-btn:hover{background:#E2E8F0;}
+  .reset-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .m-filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:760px){ .m-filter-grid{grid-template-columns:1fr;} }
+  select{width:100%;appearance:none;-webkit-appearance:none;font-family:inherit;font-size:15px;color:var(--ink);padding:12px 38px 12px 14px;
+    border:1px solid #E2E8F0;border-radius:12px;background:#F8FAFC url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 15 5 5 5-5'/%3E%3Cpath d='m7 9 5-5 5 5'/%3E%3C/svg%3E") no-repeat right 12px center;cursor:pointer;}
+  select:focus{outline:none;border-color:var(--clay);box-shadow:0 0 0 4px var(--ring);}
+  .m-active{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+  .m-active .chip{display:inline-flex;align-items:center;gap:8px;background:#EEF2FF;border:1px solid #C7D2FE;color:#4338CA;font-weight:600;font-size:14px;padding:5px 14px;border-radius:999px;}
+  .m-active .chip::before{content:"";width:8px;height:8px;border-radius:50%;background:#4F46E5;}
+  .m-table td.num{font-variant-numeric:tabular-nums;font-weight:600;}
+  .m-table .up{color:#16A34A;font-weight:600;} .m-table .down{color:#DC2626;font-weight:600;} .m-table .flat{color:#94A3B8;}
+  .m-table{table-layout:auto;min-width:760px;}
+  .m-table td{vertical-align:middle;}
+
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
   }
@@ -545,7 +571,12 @@
         </div>
 
         <div id="panel-analytics" class="panel">
-          <div class="panel-head row"><div><h1>Analytics</h1><p>How visitors find and contact IKEDA.</p></div><span class="pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Last 14 days</span></div>
+          <div class="panel-head row"><div><h1>Analytics</h1><p>How visitors find and contact IKEDA.</p></div><span class="pill" id="anPill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>Last 14 days</span></div>
+          <div class="sub-filters" id="anViews" style="margin-bottom:22px;">
+            <button class="active" data-av="overview" onclick="setAnalyticsView('overview')">Overview</button>
+            <button data-av="monthly" onclick="setAnalyticsView('monthly')">By month</button>
+          </div>
+          <div id="an-overview" class="subpanel active">
           <div class="stat-grid">
             <div class="stat-card"><div class="stat-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle class="hole" cx="12" cy="12" r="3"/></svg></div><div><div class="stat-num" id="statViews">—</div><div class="stat-label">Total page views</div></div></div><div class="stat-card"><div class="stat-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path class="cut" d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div><div><div class="stat-num" id="statSubs">—</div><div class="stat-label">Total submissions</div></div></div><div class="stat-card"><div class="stat-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path class="cut" d="M2 7h20"/><path class="cut" d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/></svg></div><div><div class="stat-num" id="statWholesale">—</div><div class="stat-label">Wholesale quotes</div></div></div><div class="stat-card"><div class="stat-ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></div><div><div class="stat-num" id="statNewsletter">—</div><div class="stat-label">Newsletter signups</div></div></div>
           </div>
@@ -568,6 +599,40 @@
             <div class="card">
               <div class="card-head"><h2>Enquiry types</h2></div>
               <div id="anMix"><p class="empty-note">No submissions yet.</p></div>
+            </div>
+          </div>
+          </div>
+          <div id="an-monthly" class="subpanel">
+            <div class="m-stats">
+              <div class="mcard"><div class="mlabel">Months in scope</div><div class="mnum" id="mMonths" style="color:var(--ink)">0</div><div class="msub" id="mMonthsSub">&nbsp;</div></div>
+              <div class="mcard"><div class="mlabel">Average views</div><div class="mnum" id="mAvg" style="color:#16A34A">0</div><div class="msub">Per month</div></div>
+              <div class="mcard"><div class="mlabel">Best month</div><div class="mnum" id="mBest" style="color:#7A2FC0">0</div><div class="msub" id="mBestSub">&nbsp;</div></div>
+              <div class="mcard"><div class="mlabel">Enquiries received</div><div class="mnum" id="mEnq" style="color:#F97316">+0</div><div class="msub">In the filtered months</div></div>
+            </div>
+
+            <div class="card m-filter">
+              <div class="m-filter-head">
+                <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>Monthly performance</h2>
+                <button class="reset-btn" onclick="resetMonthly()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset</button>
+              </div>
+              <div class="m-filter-grid">
+                <div><span class="mlabel">Year</span><select id="mYear" onchange="renderMonthly()"></select></div>
+                <div><span class="mlabel">Month</span><select id="mMonth" onchange="renderMonthly()"></select></div>
+                <div><span class="mlabel">Quarter</span><select id="mQuarter" onchange="renderMonthly()"></select></div>
+              </div>
+              <div class="m-active"><span class="mlabel" style="margin:0">Active period:</span><span class="chip" id="mChip"></span></div>
+            </div>
+
+            <div class="card chart-card">
+              <div class="card-head"><h2>Page views trend</h2><span class="meta">By month</span></div>
+              <div class="area-chart-wrap" id="monthChart" data-name="Page views"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
+            </div>
+
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div class="card-head" style="padding:22px 24px 14px;margin:0;"><h2>Month by month</h2><span class="meta" id="mLedgerMeta"></span></div>
+              <div class="sub-table-wrap" style="border:0;border-radius:0;">
+                <table class="sub-table m-table"><thead><tr><th>Month</th><th>Page views</th><th>Submissions</th><th>Wholesale</th><th>Contact</th><th>Newsletter</th><th>Views vs last month</th></tr></thead><tbody id="mRows"></tbody></table>
+              </div>
             </div>
           </div>
         </div>
@@ -850,32 +915,40 @@ const areaCharts = {};
 
 function colWpx(pts) { return pts.length > 1 ? pts[1].x - pts[0].x : 1; }
 
-function drawAreaChart(id, dayCounts) {
+function drawAreaChart(id, dayCounts, custom) {
   const color = "#475569", fillColor = "#94a3b8";
-  areaCharts[id] = { dayCounts };
+  areaCharts[id] = { dayCounts, custom };
   const wrap = document.getElementById(id);
   if (!wrap) return;
   const svg = wrap.querySelector("svg");
   const tip = wrap.querySelector(".area-tooltip");
 
-  const days = [];
-  const today = new Date();
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(today); d.setDate(d.getDate() - i);
-    days.push(d.toISOString().slice(0, 10));
+  const fmtDay = (d) => `${+d.slice(5, 7)}/${+d.slice(8, 10)}/${d.slice(0, 4)}`;
+  let days, values, labels;
+  if (custom) {
+    values = custom.values; labels = custom.labels; days = labels.map((_, i) => String(i));
+  } else {
+    days = [];
+    const today = new Date();
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(today); d.setDate(d.getDate() - i);
+      days.push(d.toISOString().slice(0, 10));
+    }
+    const map = Object.fromEntries((dayCounts || []).map((r) => [r.day, r.c]));
+    values = days.map((d) => map[d] || 0);
+    labels = days.map(fmtDay);
   }
-  const map = Object.fromEntries((dayCounts || []).map((r) => [r.day, r.c]));
-  const values = days.map((d) => map[d] || 0);
 
   const W = wrap.clientWidth || 560, H = wrap.clientHeight || 230;
   const padL = 28, padR = 6, padT = 10, padB = 30;
   const innerW = W - padL - padR, innerH = H - padT - padB;
   const max = Math.max(...values, 1);
-  const step = max <= 4 ? 1 : Math.ceil(max / 4);       // whole-number ticks only
+  const rough = max <= 4 ? 1 : max / 4, mag = Math.pow(10, Math.floor(Math.log10(rough)));
+  const step = Math.max(1, [1, 2, 2.5, 5, 10].map((m) => m * mag).find((v) => v >= rough));   // round, whole-number ticks
   const top = Math.ceil(max / step) * step;
   const x = (i) => padL + (values.length > 1 ? (i * innerW) / (values.length - 1) : 0);
   const y = (v) => padT + innerH - (v / top) * innerH;
-  const pts = values.map((v, i) => ({ x: x(i), y: y(v), v, day: days[i] }));
+  const pts = values.map((v, i) => ({ x: x(i), y: y(v), v, day: days[i], label: labels[i] }));
 
   let line = `M${pts[0].x},${pts[0].y}`;
   for (let i = 1; i < pts.length; i++) {
@@ -890,13 +963,12 @@ function drawAreaChart(id, dayCounts) {
     grid += `<line x1="${padL}" y1="${y(v)}" x2="${W - padR}" y2="${y(v)}"/>`;
     yLabels += `<text x="${padL - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
   }
-  const fmt = (d) => `${+d.slice(5, 7)}/${+d.slice(8, 10)}/${d.slice(0, 4)}`;
-  const labelW = 84, gap = Math.max(1, Math.ceil(labelW / colWpx(pts)));
+  const labelW = custom ? 70 : 84, gap = Math.max(1, Math.ceil(labelW / colWpx(pts)));
   const lastI = pts.length - 1;
   const showI = new Set([0, lastI]);
   for (let i = lastI - gap; i > gap - 1 && i > 0; i -= gap) showI.add(i);
   const xLabels = pts.map((p, i) => showI.has(i)
-    ? `<text x="${p.x}" y="${H - 8}" text-anchor="${i === 0 ? "start" : i === lastI ? "end" : "middle"}">${fmt(p.day)}</text>` : "").join("");
+    ? `<text x="${p.x}" y="${H - 8}" text-anchor="${i === 0 ? "start" : i === lastI ? "end" : "middle"}">${p.label}</text>` : "").join("");
   const colW = innerW / Math.max(pts.length - 1, 1);
   const dots = pts.map((p, i) => `<rect class="area-hit" data-i="${i}" x="${p.x - colW / 2}" y="${padT}" width="${colW}" height="${innerH}"></rect>`).join("");
   const gid = "grad-" + id;
@@ -922,7 +994,7 @@ function drawAreaChart(id, dayCounts) {
     hit.addEventListener("mouseenter", (e) => {
       cursor.setAttribute("x1", p.x); cursor.setAttribute("x2", p.x); cursor.style.opacity = 1;
       adot.setAttribute("cx", p.x); adot.setAttribute("cy", p.y); adot.style.opacity = 1;
-      tip.querySelector(".lbl").textContent = fmt(p.day);
+      tip.querySelector(".lbl").textContent = p.label;
       tip.querySelector(".val").textContent = `${seriesName.toLowerCase()} : ${p.v}`;
       tip.classList.add("show"); place(e);
     });
@@ -932,7 +1004,7 @@ function drawAreaChart(id, dayCounts) {
     });
   });
 }
-window.addEventListener("resize", () => Object.entries(areaCharts).forEach(([id, c]) => drawAreaChart(id, c.dayCounts, c.color)));
+window.addEventListener("resize", () => Object.entries(areaCharts).forEach(([id, c]) => drawAreaChart(id, c.dayCounts, c.custom)));
 
 function renderAnalyticsExtras(d) {
   const v = d.viewsByDay || [], sum = (a) => a.reduce((t, r) => t + Number(r.c || 0), 0);
@@ -953,6 +1025,89 @@ function renderAnalyticsExtras(d) {
   }).join("") : `<p class="empty-note">No submissions yet.</p>`;
 }
 
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+let monthlyAll = [];
+
+function setAnalyticsView(v) {
+  document.querySelectorAll("#anViews button").forEach((b) => b.classList.toggle("active", b.dataset.av === v));
+  document.getElementById("an-overview").classList.toggle("active", v === "overview");
+  document.getElementById("an-monthly").classList.toggle("active", v === "monthly");
+  document.getElementById("anPill").style.display = v === "monthly" ? "none" : "";
+  if (v === "monthly") renderMonthly();
+}
+
+function buildMonthly(rows) {
+  // fill gaps so the trend has one point per month, ending this month
+  const byKey = Object.fromEntries((rows || []).map((r) => [r.month, r]));
+  const now = new Date(), end = now.getFullYear() * 12 + now.getMonth();
+  const keys = Object.keys(byKey).sort();
+  const start = keys.length ? (+keys[0].slice(0, 4)) * 12 + (+keys[0].slice(5, 7) - 1) : end;
+  const out = [];
+  for (let m = Math.max(start, end - 35); m <= end; m++) {
+    const key = `${Math.floor(m / 12)}-${String((m % 12) + 1).padStart(2, "0")}`;
+    out.push(byKey[key] || { month: key, views: 0, submissions: 0, wholesale: 0, contact: 0, newsletter: 0 });
+  }
+  return out;
+}
+
+function fillMonthlyFilters() {
+  const years = [...new Set(monthlyAll.map((r) => r.month.slice(0, 4)))].sort().reverse();
+  const y = document.getElementById("mYear"), m = document.getElementById("mMonth"), q = document.getElementById("mQuarter");
+  const keep = [y.value, m.value, q.value];
+  y.innerHTML = `<option value="">All years</option>` + years.map((v) => `<option>${v}</option>`).join("");
+  m.innerHTML = `<option value="">All months</option>` + MONTH_NAMES.map((n, i) => `<option value="${i + 1}">${n}</option>`).join("");
+  q.innerHTML = `<option value="">All quarters</option>` + [1, 2, 3, 4].map((n) => `<option value="${n}">Q${n}</option>`).join("");
+  [y.value, m.value, q.value] = keep;
+}
+
+function resetMonthly() {
+  ["mYear", "mMonth", "mQuarter"].forEach((id) => { document.getElementById(id).value = ""; });
+  renderMonthly();
+}
+
+function renderMonthly() {
+  if (!document.getElementById("mYear").options.length) fillMonthlyFilters();
+  const y = document.getElementById("mYear").value, mo = document.getElementById("mMonth").value, q = document.getElementById("mQuarter").value;
+  const rows = monthlyAll.filter((r) => {
+    const mm = +r.month.slice(5, 7);
+    return (!y || r.month.startsWith(y)) && (!mo || mm === +mo) && (!q || Math.ceil(mm / 3) === +q);
+  });
+  const label = (r) => `${MONTH_NAMES[+r.month.slice(5, 7) - 1].slice(0, 3)} ${r.month.slice(0, 4)}`;
+  const sum = (k) => rows.reduce((t, r) => t + r[k], 0);
+  const n = rows.length;
+  let best = rows[0];
+  rows.forEach((r) => { if (r.views > best.views) best = r; });
+
+  document.getElementById("mMonths").textContent = n;
+  document.getElementById("mMonthsSub").textContent = n ? `${label(rows[0])} to ${label(rows[n - 1])}` : "No months match";
+  document.getElementById("mAvg").textContent = n ? Math.round(sum("views") / n).toLocaleString() : 0;
+  document.getElementById("mBest").textContent = n ? best.views.toLocaleString() : 0;
+  document.getElementById("mBestSub").textContent = n ? label(best) : "";
+  document.getElementById("mEnq").textContent = "+" + sum("submissions");
+  const parts = [y || "All years", mo ? MONTH_NAMES[+mo - 1] : "All months"];
+  if (q) parts.push("Q" + q);
+  document.getElementById("mChip").textContent = parts.join(": ");
+  document.getElementById("mLedgerMeta").textContent = `${n} ${n === 1 ? "month" : "months"}`;
+
+  const prev = {};
+  monthlyAll.forEach((r, i) => { prev[r.month] = monthlyAll[i - 1]; });
+  document.getElementById("mRows").innerHTML = n ? rows.slice().reverse().map((r) => {
+    const p = prev[r.month];
+    let delta = `<span class="flat">First month</span>`;
+    if (p) {
+      if (!p.views) delta = r.views ? `<span class="up">New</span>` : `<span class="flat">0%</span>`;
+      else {
+        const pct = Math.round(((r.views - p.views) / p.views) * 100);
+        delta = pct > 0 ? `<span class="up">+${pct}%</span>` : pct < 0 ? `<span class="down">${pct}%</span>` : `<span class="flat">0%</span>`;
+      }
+    }
+    return `<tr><td class="num">${label(r)}</td><td class="num">${r.views.toLocaleString()}</td><td class="num">${r.submissions}</td><td>${r.wholesale}</td><td>${r.contact}</td><td>${r.newsletter}</td><td>${delta}</td></tr>`;
+  }).join("") : `<tr><td colspan="7" class="sub-empty">No data for this period.</td></tr>`;
+
+  if (n) drawAreaChart("monthChart", null, { labels: rows.map(label), values: rows.map((r) => r.views) });
+  else document.querySelector("#monthChart svg").innerHTML = "";
+}
+
 async function loadAnalytics() {
   try {
     const res = await fetch(`${API_BASE}/api/admin/analytics`, { headers: { Authorization: `Bearer ${token}` } });
@@ -967,6 +1122,9 @@ async function loadAnalytics() {
     drawAreaChart("viewsChart", d.viewsByDay);
     drawAreaChart("subsChart", d.submissionsByDay);
     renderAnalyticsExtras(d);
+    monthlyAll = buildMonthly(d.monthly);
+    fillMonthlyFilters();
+    if (document.getElementById("an-monthly").classList.contains("active")) renderMonthly();
   } catch (err) {
     console.error(err);
   }
