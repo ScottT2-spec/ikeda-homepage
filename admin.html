@@ -394,6 +394,10 @@
     border:1.5px solid rgba(255,255,255,.3);pointer-events:none;}
   .sidebar>*{position:relative;z-index:1;}
 
+  .sidebar>.side-dot{position:absolute;width:64px;height:64px;border-radius:50%;left:148px;bottom:168px;z-index:0;
+    background:radial-gradient(circle at 32% 30%,#FFE394 0%,#F3BE45 55%,#E5A52A 100%);
+    box-shadow:0 8px 18px -4px rgba(110,62,0,.38),inset 0 -3px 6px rgba(150,90,0,.18);pointer-events:none;}
+
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
   }
@@ -425,7 +429,7 @@
     <div class="backdrop" id="backdrop" onclick="closeSidebar()"></div>
 
     <nav class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><img class="side-logo" src="/logo-white.png" alt="IKEDA"><small>Admin</small></div>
+      <span class="side-dot" aria-hidden="true"></span><div class="sidebar-brand"><img class="side-logo" src="/logo-white.png" alt="IKEDA"><small>Admin</small></div>
       <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Dashboard</div>
       <div class="nav-item" data-tab="analytics" onclick="switchTab('analytics')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="line" d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="15" y="5" width="4" height="12" rx="1"/><rect x="7" y="8" width="4" height="9" rx="1"/></svg> Analytics</div>
       <div class="nav-item" data-tab="submissions" onclick="switchTab('submissions')"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><polyline class="cut" points="22 12 16 12 14 15 10 15 8 12 2 12"/></svg> Submissions <span class="count" id="subCount">0</span></div>
