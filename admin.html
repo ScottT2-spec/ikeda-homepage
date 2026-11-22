@@ -307,6 +307,20 @@
   .area-tooltip .lbl{color:#F0D9A8;}
   .sub-filters,.subnav{background:#EFE9E1;}
 
+  /* ---- honey sidebar ---- */
+  .sidebar{background:var(--gold);color:var(--ink);border-right:none;}
+  .sidebar-brand{color:var(--ink);}
+  .sidebar-brand small{color:#5A3B00;}
+  .nav-item{color:#3A2410;--ic-cut:var(--gold);}
+  .nav-item:hover{background:rgba(255,255,255,.28);color:var(--ink);--ic-cut:#E9B462;}
+  .nav-item.active{background:var(--clay);color:#fff;--ic-cut:var(--clay);box-shadow:none;}
+  .nav-item .count{background:rgba(42,24,64,.12);color:var(--ink);}
+  .nav-item.active .count{background:#fff;color:var(--clay);}
+  .sidebar-foot{border-top-color:rgba(42,24,64,.18);}
+  .sidebar-foot a{color:#3A2410;}
+  .sidebar-foot a:hover{color:var(--ink);background:rgba(255,255,255,.28);}
+  button:focus-visible,.nav-item:focus-visible,.sidebar-foot a:focus-visible{outline-color:var(--clay);}
+
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
   }
@@ -618,7 +632,7 @@ function renderSubmissions() {
     </tr>`;
   }).join("");
   list.innerHTML = `<div class="sub-table-wrap"><table class="sub-table">
-    <colgroup><col style="width:13%"><col style="width:14%"><col style="width:17%"><col style="width:12%"><col style="width:13%"><col style="width:8%"><col style="width:14%"><col style="width:9%"></colgroup>
+    <colgroup><col style="width:12%"><col style="width:13%"><col style="width:20%"><col style="width:11%"><col style="width:13%"><col style="width:8%"><col style="width:14%"><col style="width:9%"></colgroup>
     <thead><tr><th>Type / Date</th><th>Name</th><th>Email</th><th>Company</th><th>Phone</th><th>Volume</th><th>Message</th><th></th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
