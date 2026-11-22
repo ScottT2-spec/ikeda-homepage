@@ -394,9 +394,10 @@
     border:1.5px solid rgba(255,255,255,.3);pointer-events:none;}
   .sidebar>*{position:relative;z-index:1;}
 
-  .sidebar>.side-dot{position:absolute;width:64px;height:64px;border-radius:50%;left:148px;bottom:168px;z-index:0;
-    background:radial-gradient(circle at 32% 30%,#FFE394 0%,#F3BE45 55%,#E5A52A 100%);
-    box-shadow:0 8px 18px -4px rgba(110,62,0,.38),inset 0 -3px 6px rgba(150,90,0,.18);pointer-events:none;}
+  .sidebar>.side-dot{position:absolute;left:20px;bottom:100px;width:220px;height:280px;z-index:0;pointer-events:none;
+    background-image:radial-gradient(circle,rgba(255,255,255,.9) 2px,transparent 2.3px);background-size:16px 16px;
+    -webkit-mask-image:radial-gradient(ellipse 85% 85% at 100% 100%,#000 0%,transparent 72%);
+            mask-image:radial-gradient(ellipse 85% 85% at 100% 100%,#000 0%,transparent 72%);}
 
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
