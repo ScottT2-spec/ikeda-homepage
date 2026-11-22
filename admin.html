@@ -371,6 +371,14 @@
   .side-logo{height:26px;width:auto;display:block;filter:brightness(0);}
   .sidebar-brand{align-items:center;letter-spacing:0;}
 
+  /* highlighted left edge on stat boxes (same pattern as the site builder dashboard) */
+  .stat-card{border-left:4px solid var(--edge,var(--clay));transition:box-shadow .2s ease;}
+  .stat-card:hover{box-shadow:0 10px 24px -12px rgba(51,23,94,.28);}
+  .stat-grid .stat-card:nth-child(1){--edge:var(--clay);border-left-color:var(--clay);}
+  .stat-grid .stat-card:nth-child(2){--edge:var(--gold);border-left-color:var(--gold);}
+  .stat-grid .stat-card:nth-child(3){--edge:#4A6FA5;border-left-color:#4A6FA5;}
+  .stat-grid .stat-card:nth-child(4){--edge:var(--moss);border-left-color:var(--moss);}
+
   @media (prefers-reduced-motion:reduce){
     *{animation:none !important;transition:none !important;}
   }
