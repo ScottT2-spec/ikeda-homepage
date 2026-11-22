@@ -156,14 +156,16 @@
   /* area chart (same look as the qualification portal's analytics: dashed grid, light fill, dark tooltip) */
   .area-chart-wrap{position:relative;height:240px;margin-top:6px;}
   .area-chart-wrap svg{width:100%;height:100%;display:block;overflow:visible;}
-  .area-grid line{stroke:var(--line);stroke-dasharray:3 3;}
-  .area-axis text{font-size:11px;fill:var(--t3);}
-  .area-dot{stroke:#fff;stroke-width:2;transition:r .12s ease;}
+  .area-grid line{stroke:#e2e8f0;stroke-dasharray:3 3;}
+  .area-axis text{font-size:12px;fill:#64748b;}
+  .area-cursor{stroke:#ccc;stroke-width:1;opacity:0;pointer-events:none;}
+  .area-dot{stroke:#fff;stroke-width:2;opacity:0;pointer-events:none;}
   .area-hit{fill:transparent;cursor:pointer;}
-  .area-tooltip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-125%);background:var(--ink);color:#fff;
-    border-radius:12px;padding:8px 12px;font-size:13px;white-space:nowrap;transition:opacity .12s ease;z-index:2;}
+  /* tooltip: same look as the staff dashboards (white, 8px radius, soft shadow, no border) */
+  .area-tooltip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-125%);background:#fff;color:#334155;
+    border-radius:8px;padding:10px;font-size:13px;white-space:nowrap;box-shadow:0 4px 6px -1px rgb(0 0 0 / .1),0 2px 4px -2px rgb(0 0 0 / .1);z-index:2;}
   .area-tooltip.show{opacity:1;}
-  .area-tooltip .lbl{display:block;color:#C9B8E8;font-weight:600;margin-bottom:2px;}
+  .area-tooltip .lbl{display:block;color:#334155;margin-bottom:2px;}
 
   /* ---- dashboard overview ---- */
   .welcome{margin-bottom:26px;}
@@ -304,7 +306,7 @@
   .field-nav a:hover,.field-nav a.on{background:var(--gold-soft);color:var(--gold-ink);}
   .sub-table th{background:#F6F1EA;}
   .sub-table tbody tr:hover{background:#FCFAF7;}
-  .area-tooltip .lbl{color:#F0D9A8;}
+  .area-tooltip .lbl{display:block;color:#334155;margin-bottom:2px;}
   .sub-filters,.subnav{background:#EFE9E1;}
 
   /* ---- honey sidebar ---- */
@@ -450,7 +452,7 @@
             <div class="dash-main">
               <div class="card">
                 <div class="card-head"><h2>Page views</h2><span class="meta">Last 14 days</span></div>
-                <div class="area-chart-wrap" id="dashViewsChart"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
+                <div class="area-chart-wrap" id="dashViewsChart" data-name="Page views"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
               </div>
               <div class="card">
                 <div class="card-head"><h2>Recent submissions</h2><button onclick="switchTab('submissions')">See all</button></div>
@@ -480,7 +482,7 @@
           <div class="card chart-card">
             <div class="card-head"><h2>Page views</h2><span class="meta">Per day</span></div>
             <div class="big" id="viewsBig">0<small>views in 14 days</small></div>
-            <div class="area-chart-wrap" id="viewsChart"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
+            <div class="area-chart-wrap" id="viewsChart" data-name="Page views"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
             <div class="facts">
               <div class="fact"><b id="factAvg">0</b><span>Average a day</span></div>
               <div class="fact"><b id="factPeak">0</b><span id="factPeakLbl">Busiest day</span></div>
@@ -491,7 +493,7 @@
             <div class="card chart-card">
               <div class="card-head"><h2>Submissions</h2><span class="meta">Per day</span></div>
               <div class="big" id="subsBig">0<small>enquiries in 14 days</small></div>
-              <div class="area-chart-wrap" id="subsChart"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
+              <div class="area-chart-wrap" id="subsChart" data-name="Submissions"><svg></svg><div class="area-tooltip"><span class="lbl"></span><span class="val"></span></div></div>
             </div>
             <div class="card">
               <div class="card-head"><h2>Enquiry types</h2></div>
@@ -793,7 +795,7 @@ function drawAreaChart(id, dayCounts, color) {
   const values = days.map((d) => map[d] || 0);
 
   const W = wrap.clientWidth || 560, H = wrap.clientHeight || 230;
-  const padL = 30, padR = 14, padT = 14, padB = 28;
+  const padL = 26, padR = 10, padT = 10, padB = 30;
   const innerW = W - padL - padR, innerH = H - padT - padB;
   const max = Math.max(...values, 1);
   const step = max <= 4 ? 1 : Math.ceil(max / 4);       // whole-number ticks only
@@ -818,27 +820,33 @@ function drawAreaChart(id, dayCounts, color) {
   const every = W < 420 ? 3 : W < 640 ? 2 : 1;
   const xLabels = pts.map((p, i) => i % every === 0
     ? `<text x="${p.x}" y="${H - 8}" text-anchor="middle">${p.day.slice(5).replace("-", "/")}</text>` : "").join("");
-  const dots = pts.map((p, i) => `<circle class="area-dot" data-i="${i}" cx="${p.x}" cy="${p.y}" r="3" fill="${color}"></circle><circle class="area-hit" data-i="${i}" cx="${p.x}" cy="${p.y}" r="14"></circle>`).join("");
+  const colW = innerW / Math.max(pts.length - 1, 1);
+  const dots = pts.map((p, i) => `<rect class="area-hit" data-i="${i}" x="${p.x - colW / 2}" y="${padT}" width="${colW}" height="${innerH}"></rect>`).join("");
+  const gid = "grad-" + id;
 
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.innerHTML = `<g class="area-grid">${grid}</g><g class="area-axis">${yLabels}${xLabels}</g>
-    <path d="${area}" fill="${color}" fill-opacity="0.1" stroke="none"></path>
-    <path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"></path>${dots}`;
+  svg.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stop-color="${color}" stop-opacity="0.3"/><stop offset="95%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    <g class="area-grid">${grid}</g><g class="area-axis">${yLabels}${xLabels}</g>
+    <path d="${area}" fill="url(#${gid})" stroke="none"></path>
+    <path d="${line}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"></path>
+    <line class="area-cursor" x1="0" y1="${padT}" x2="0" y2="${base}"></line>
+    <circle class="area-dot" r="4" fill="${color}" cx="0" cy="0"></circle>${dots}`;
+  const cursor = svg.querySelector(".area-cursor"), adot = svg.querySelector(".area-dot");
+  const seriesName = wrap.dataset.name || "Value";
 
   svg.querySelectorAll(".area-hit").forEach((hit) => {
     const p = pts[+hit.dataset.i];
-    const dot = svg.querySelector(`.area-dot[data-i="${hit.dataset.i}"]`);
     hit.addEventListener("mouseenter", () => {
-      dot.setAttribute("r", "5"); dot.setAttribute("fill", "#C9B8E8"); dot.style.stroke = color;
+      cursor.setAttribute("x1", p.x); cursor.setAttribute("x2", p.x); cursor.style.opacity = 1;
+      adot.setAttribute("cx", p.x); adot.setAttribute("cy", p.y); adot.style.opacity = 1;
       const date = new Date(p.day + "T00:00:00Z").toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
       tip.querySelector(".lbl").textContent = date;
-      tip.querySelector(".val").textContent = p.v;
+      const val = tip.querySelector(".val"); val.textContent = `${seriesName} : ${p.v}`; val.style.color = color;
       tip.style.left = `${p.x}px`; tip.style.top = `${p.y}px`;
       tip.classList.add("show");
     });
     hit.addEventListener("mouseleave", () => {
-      dot.setAttribute("r", "3"); dot.setAttribute("fill", color); dot.style.stroke = "";
-      tip.classList.remove("show");
+      cursor.style.opacity = 0; adot.style.opacity = 0; tip.classList.remove("show");
     });
   });
 }
